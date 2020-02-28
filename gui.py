@@ -11,7 +11,7 @@ def register(f_name, l_name):
 
 
 root = Tk()
-root.title("DATABASE")
+root.title("SNet")
 root.geometry("300x300")
 root.resizable(0, 0)
 # root.minsize(width=300, height=300)
