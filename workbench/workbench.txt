@@ -1,0 +1,5 @@
+Order in file "users.txt":
+id,f_name,l_name,admin
+-------------------------------
+Order in file "common.txt":
+users_amount

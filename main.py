@@ -13,10 +13,10 @@ class User:
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
-        self.id = int(DataHandling.get_from_database("data/app.csv", "users")) + 1
+        self.id = 1  # TODO: change
 
-        DataHandling.save_to_database("users.csv", self.id, self.f_name, self.l_name, self.admin)
-        DataHandling.save_to_database("app.csv", self.id)
+        # DataHandling.save_to_database("users.csv", self.id, self.f_name, self.l_name, self.admin)
+        # DataHandling.save_to_database("app.csv", self.id)
 
     @classmethod
     def from_str(cls, name_str):
@@ -44,34 +44,21 @@ class DataHandling:
     @staticmethod
     def save_to_database(database_path, player_id, f_name, l_name, admin):
 
-        if database_path == "data/users.csv":
+        if database_path == "data/users.txt":
             data = f"{player_id},{f_name},{l_name},{admin}\n"
 
             with open(database_path, "a") as write_database:
                 write_database.write(data)
 
-        elif database_path == "data/app.csv":
-            with open(database_path, "w") as write_database:
-                for line in write_database:
-                    if line.split(",")[0] == "users":
-                        write_database.write(f"users,{player_id}")
-
     @staticmethod
-    def get_from_database(database_path, value):
+    def user_exists(database_path, f_name, l_name):
         """Getting data from database"""
 
         with open(database_path, "r") as read_database:
-            info = read_database.read()
-            for line in info:
-                if line.split(",")[0] == value:
-                    return line.split(",")[1]
-                else:
-                    print("no data found")
+            info_lines = read_database.readlines()
+            for line in info_lines:
+                values = line.split(",")
+                if f_name.lower() in values and l_name.lower() in values:
+                    return True
+            return False
 
-
-# my_player = User.from_str("Alejandro-Suarez-True")
-# my_player_2 = User.from_str("Regina-Sultanova-False")
-#
-# p_dat = my_player.__dict__.items()
-# for line in p_dat:
-#     print(line)
