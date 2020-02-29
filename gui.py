@@ -5,18 +5,20 @@ from tkinter import messagebox
 from main import *
 
 
-def new_user_reg(f_name, l_name):
+def new_user_reg(user_name, user_pass):
     """Check the existence. If not matches found - creates new user,
     puts data into database"""
 
-    if not DataHandling.user_exists("data/users.txt", f_name, l_name):
-        new_user = User(f_name, l_name, False)
+    if not DataHandling.user_exists("data/users.txt", user_name):
+        new_user = User(user_name, user_pass, False)
 
         DataHandling.save_to_database("data/users.txt",
                                       new_user.id,
+                                      new_user.admin,
+                                      new_user.user_name,
+                                      new_user.user_pass,
                                       new_user.f_name,
-                                      new_user.l_name,
-                                      new_user.admin)
+                                      new_user.l_name)
         messagebox.showinfo("SNet", "User added")
     else:
         messagebox.showerror("SNet", "User already exists")
@@ -24,17 +26,25 @@ def new_user_reg(f_name, l_name):
 
 root = Tk()
 root.title("SNet")
-root.geometry("300x300")
-root.resizable(0, 0)
-# root.minsize(width=300, height=300)
+root.geometry("250x200")
+# root.resizable(0, 0)
+root.minsize(width=250, height=200)
 
-f_name_entry = Entry(root)
-f_name_entry.pack()
-l_name_entry = Entry(root)
-l_name_entry.pack()
+main_frame = Frame(root)
+main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-register_btn = Button(root, text="Register")
-register_btn.bind("<Button-1>", lambda event: new_user_reg(f_name_entry.get(), l_name_entry.get()))
-register_btn.pack()
+name_lbl = Label(main_frame, text="User name")
+name_lbl.grid(row=0, column=0, sticky=E)
+pass_lbl = Label(main_frame, text="Password")
+pass_lbl.grid(row=1, column=0, sticky=E)
+
+user_name_entry = Entry(main_frame)
+user_name_entry.grid(row=0, column=1)
+user_pass = Entry(main_frame, show="*")
+user_pass.grid(row=1, column=1)
+
+register_btn = Button(main_frame, text="Register")
+register_btn.bind("<Button-1>", lambda event: new_user_reg(user_name_entry.get(), user_pass.get()))
+register_btn.grid(row=2, column=1, sticky=E)
 
 root.mainloop()

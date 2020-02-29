@@ -5,11 +5,15 @@ login/register system with an availability to scale and grow or even changing th
 by Alejandro Suarez
 2020-February"""
 
+# standard libraries
+
 
 class User:
     """Creating user instance"""
 
-    def __init__(self, f_name: str, l_name: str, admin: bool):
+    def __init__(self, user_name, user_pass, admin: bool, f_name="none", l_name="none"):
+        self.user_name = user_name.lower()
+        self.user_pass = user_pass
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
@@ -39,23 +43,27 @@ class DataHandling:
     """Data handling: saving & spitting"""
 
     @staticmethod
-    def save_to_database(database_path, player_id, f_name, l_name, admin):
+    def save_to_database(database_path, user_id, admin, user_name, user_pass, f_name, l_name):
 
         if database_path == "data/users.txt":
-            data = f"{player_id},{f_name},{l_name},{admin}\n"
+            data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
 
             with open(database_path, "a") as write_database:
                 write_database.write(data)
 
     @staticmethod
-    def user_exists(database_path, f_name, l_name):
+    def user_exists(database_path, user_name):
         """Getting data from database"""
 
         with open(database_path, "r") as read_database:
-            info_lines = read_database.readlines()
-            for line in info_lines:
-                values = line.split(",")
-                if f_name.lower() in values and l_name.lower() in values:
+
+            while True:
+                line = read_database.readline()
+                if not line:
+                    break
+
+                values_list = line.split(",")
+                if user_name.lower() in values_list:
                     return True
             return False
 
