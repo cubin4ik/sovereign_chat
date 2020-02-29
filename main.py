@@ -15,9 +15,6 @@ class User:
         self.admin = admin
         self.id = 1  # TODO: change
 
-        # DataHandling.save_to_database("users.csv", self.id, self.f_name, self.l_name, self.admin)
-        # DataHandling.save_to_database("app.csv", self.id)
-
     @classmethod
     def from_str(cls, name_str):
         """Creates an instance of a player using any string provided"""
