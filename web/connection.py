@@ -16,44 +16,70 @@ class Connection:
     def __init__(self, socket_type=None):
         """Creates an endpoint using TCP/IP"""
 
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.host_socket:
+        # TODO: Find how to close all sockets correctly
+        self.host_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-            # Checks an endpoint type (server or client)
-            if socket_type is None or socket_type == "client":
-                self.host_socket.connect((Connection.IP, Connection.PORT))
-            elif socket_type == "server":
-                self.host_socket.bind((Connection.IP, Connection.PORT))
-                self.host_socket.listen(Connection.QUEUE)
+        # Checks an endpoint type (server or client)
+        if socket_type is None or socket_type == "client":
+            self.host_socket.connect((Connection.IP, Connection.PORT))
+        elif socket_type == "server":
+            self.host_socket.bind((Connection.IP, Connection.PORT))
+            self.host_socket.listen(Connection.QUEUE)
 
-                # TODO: Add thread joining list
-                while True:
-                    print("listening..")
-                    remote_socket, address = self.host_socket.accept()
-                    print(f"connection: {address}")
+            # TODO: Add thread joining list
+            while True:
+                print("listening..")
+                remote_socket, address = self.host_socket.accept()
+                print(f"connection: {address}")
 
-                    # Establishing messages headers
-                    remote_socket.send(f"{Connection.HEADER_SIZE}".encode("utf-8"))
+                # TODO: Establishing messages headers below
+                # remote_socket.send(f"{Connection.HEADER_SIZE}".encode("utf-8"))
 
-                    thread = threading.Thread(target=self.serv_client, args=[remote_socket])
-                    thread.start()
-            else:
-                raise ValueError("You need to specify connection type: \"server\" or \"client\"")
+                thread = threading.Thread(target=self.serv_client, args=[remote_socket])
+                thread.start()
+        else:
+            raise ValueError("You need to specify connection type: \"server\" or \"client\"")
 
-    @staticmethod
-    def serv_client(client_socket):
+    def serv_client(self, client_socket):
         """A thread of serving one client"""
 
-        new_msg = ""
+        req = self.receive(client_socket)
+        if not req:
+            print(f"connection failed: {client_socket}")
+        else:
+            print(f"received: {req}")
+            req = f"{len(req):<{Connection.HEADER_SIZE}}" + req
+            client_socket.send(req.encode("utf-8"))
+
+    @staticmethod
+    def receive(remote_socket):
+        """Receiving any long message"""
+
+        new_msg = True
         req_full = ""
+        msg_len = 0
         while True:
-            msg_chunk = client_socket.recv(Connection.BUFF_SIZE).decode("utf-8")
+            msg_chunk = remote_socket.recv(Connection.BUFF_SIZE).decode("utf-8")
 
             if not msg_chunk:
+                print("NO DATA RCV")
                 break
-
             if new_msg:
                 msg_len = int(msg_chunk[:Connection.HEADER_SIZE].strip())
+                new_msg = False
+
             req_full += msg_chunk
 
-        client_socket.send(f"received: {req_full}".encode("utf-8"))
+            if len(req_full[Connection.HEADER_SIZE:]) == msg_len:
+                return req_full[Connection.HEADER_SIZE:]
+
+    def send_req(self, msg):
+        """Returns response from server to request (with header)"""
+
+        msg = f"{len(msg):<{Connection.HEADER_SIZE}}" + msg
+        self.host_socket.send(msg.encode("utf-8"))
+
+        resp = self.receive(self.host_socket)
+
+        return resp
 
