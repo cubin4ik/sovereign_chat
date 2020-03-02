@@ -9,7 +9,7 @@ class Connection:
 
     IP = "127.0.0.1"
     PORT = 1234
-    BUFF_SIZE = 2 ** 7
+    BUFF_SIZE = 2
     HEADER_SIZE = 10
     QUEUE = 5
 
@@ -62,7 +62,6 @@ class Connection:
             msg_chunk = remote_socket.recv(Connection.BUFF_SIZE).decode("utf-8")
 
             if not msg_chunk:
-                print("NO DATA RCV")
                 break
             if new_msg:
                 msg_len = int(msg_chunk[:Connection.HEADER_SIZE].strip())
