@@ -9,7 +9,7 @@ class Connection:
 
     IP = "127.0.0.1"
     PORT = 1234
-    BUFF_SIZE = 2
+    BUFF_SIZE = 2 ** 7
     HEADER_SIZE = 10
     QUEUE = 5
 
