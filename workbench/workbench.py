@@ -1,7 +1,16 @@
-with open("../data/users.txt", "r") as f:
-    while True:
-        line = f.readline()
-        if not line:
-            print("EOF")
-            break
-        print(line)
+class SomeClass:
+    value = 5
+
+
+class SomeOtherClass(SomeClass):
+    pass
+
+instance = SomeClass()
+another_instance = SomeOtherClass()
+
+print(instance.value)
+print(another_instance.value)
+print("-" * 10)
+another_instance.value = 75
+print(instance.value)
+print(another_instance.value)
