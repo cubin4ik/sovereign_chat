@@ -3,6 +3,13 @@
 from tkinter import *
 from tkinter import messagebox
 from main import *
+from web.connection import Connection
+
+
+def check_key():
+    """Checks if user key is registered and logged in"""
+
+    pass
 
 
 def new_user_reg(user_name, user_pass):
