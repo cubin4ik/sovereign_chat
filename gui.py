@@ -1,5 +1,6 @@
 """USER DATABASE: social-database"""
 
+import os
 from tkinter import *
 from tkinter import messagebox
 from main import *
@@ -9,7 +10,13 @@ from web.connection import Connection
 def check_key():
     """Checks if user key is registered and logged in"""
 
-    pass
+    resp = False  # Not logged in
+    if os.path.exists("data/key.txt"):
+        with open("data/key.txt", "r") as rf:
+            host_socket = Connection("client")
+            resp = bool(host_socket.send_req(rf.read()))  # Either logged in or not (True or False)
+
+    return resp
 
 
 def new_user_reg(user_name, user_pass):

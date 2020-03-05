@@ -67,3 +67,7 @@ class DataHandling:
                     return True
             return False
 
+
+class Session:
+    pass
+
