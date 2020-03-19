@@ -69,5 +69,6 @@ class DataHandling:
 
 
 class Session:
+    """Operations with sessions"""
     pass
 
