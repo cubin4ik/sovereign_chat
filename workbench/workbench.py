@@ -1,16 +1,33 @@
-class SomeClass:
-    value = 5
+import time
 
 
-class SomeOtherClass(SomeClass):
-    pass
+def perf_check():
+    start_time = time.perf_counter()
 
-instance = SomeClass()
-another_instance = SomeOtherClass()
+    with open("workbench.txt", "r") as rf:
+        stat = rf.readlines()[-1]
+        print(stat)
 
-print(instance.value)
-print(another_instance.value)
-print("-" * 10)
-another_instance.value = 75
-print(instance.value)
-print(another_instance.value)
+    # with open("workbench.txt", "r") as rf:
+    #     while True:
+    #         stat = rf.readline()
+    #         print(stat)
+    #         if not stat:
+    #             break
+
+    stop_time = time.perf_counter()
+
+    print(f"DIFF: {stop_time - start_time}")
+
+    # 0.040541499999999994 - using [-1]
+    # 0.485154 - using all file loop
+
+
+with open("../data/users.txt", "r") as rf:
+    text = rf.readlines()[-1].split(",")[0]
+    if not text:
+        print("NO")
+    else:
+        print(text)
+
+# help()
