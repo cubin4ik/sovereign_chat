@@ -5,8 +5,6 @@ login/register system with an availability to scale and grow or even changing th
 by Alejandro Suarez
 2020-February"""
 
-# standard libraries
-
 
 class User:
     """Creating user instance"""
@@ -17,7 +15,7 @@ class User:
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
-        self.id = 1  # TODO: change
+        self.id = 1 + int(DataHandling.get_last_id())
 
     @classmethod
     def from_str(cls, name_str):
@@ -67,7 +65,43 @@ class DataHandling:
                     return True
             return False
 
+    @staticmethod
+    def get_last_id():
+        """Spits the last registered user if"""
+
+        with open("data/users.txt", "r") as rf:
+            if len(rf.read()) == 0:
+                return 0
+            rf.seek(0)
+            return rf.readlines()[-1].split(",")[0]
+
 
 class Session:
-    pass
+    """Handles operations on sessions and controls it"""
+
+    def __init__(self, key=None):
+        if key is None:
+            import random
+            import time
+
+            # TODO: check how string formatting works!
+            self.key = str(random.randint(1000, 9999)) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
+            # self.key = self.key[:30]
+        else:
+            self.key = key
+
+        # TODO: Check if session exists
+
+    @staticmethod
+    def check_key(key):
+        """Checks if user key is registered and logged in"""
+
+        pass
+        # resp = False  # Not logged in
+        # if os.path.exists("data/key.txt"):
+        #     with open("data/key.txt", "r") as rf:
+        #         host_socket = Connection("client")
+        #         resp = bool(host_socket.send_req(rf.read()))  # Either logged in or not (True or False)
+
+        # return resp
 

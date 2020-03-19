@@ -4,19 +4,23 @@ import os
 from tkinter import *
 from tkinter import messagebox
 from main import *
-from web.connection import Connection
 
 
-def check_key():
-    """Checks if user key is registered and logged in"""
-
-    resp = False  # Not logged in
-    if os.path.exists("data/key.txt"):
-        with open("data/key.txt", "r") as rf:
-            host_socket = Connection("client")
-            resp = bool(host_socket.send_req(rf.read()))  # Either logged in or not (True or False)
-
-    return resp
+# def create_new_session():
+#     new_sess = Session()
+#     with open("data/key.txt", "w") as wf:
+#         wf.write(new_sess.key)
+#
+#
+# if os.path.exists("data/key.txt"):
+#     with open("data/key.txt", "r") as rf:
+#         session_stat = Session.check_key(rf.read())
+#     if session_stat:
+#         pass  # TODO: enter the system
+#     else:
+#         create_new_session()
+# else:
+#     create_new_session()
 
 
 def new_user_reg(user_name, user_pass):
@@ -54,11 +58,11 @@ pass_lbl.grid(row=1, column=0, sticky=E)
 
 user_name_entry = Entry(main_frame)
 user_name_entry.grid(row=0, column=1)
-user_pass = Entry(main_frame, show="*")
-user_pass.grid(row=1, column=1)
+user_pass_entry = Entry(main_frame, show="*")
+user_pass_entry.grid(row=1, column=1)
 
 register_btn = Button(main_frame, text="Register")
-register_btn.bind("<Button-1>", lambda event: new_user_reg(user_name_entry.get(), user_pass.get()))
+register_btn.bind("<Button-1>", lambda event: new_user_reg(user_name_entry.get(), user_pass_entry.get()))
 register_btn.grid(row=2, column=1, sticky=E)
 
 root.mainloop()
