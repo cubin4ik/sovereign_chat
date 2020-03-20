@@ -1,3 +1,5 @@
+"""Test your ideas here"""
+
 import time
 
 
@@ -23,11 +25,11 @@ def perf_check():
     # 0.485154 - using all file loop
 
 
-with open("../data/users.txt", "r") as rf:
-    text = rf.readlines()[-1].split(",")[0]
-    if not text:
-        print("NO")
-    else:
-        print(text)
+def get_last_id():
+    with open("../data/users.txt", "r") as rf:
+        text = rf.readlines()[-1].split(",")[0]
+        if not text:
+            return "NO"
+        else:
+            return text
 
-# help()
