@@ -19,7 +19,7 @@ class User:
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
-        self.id = 1 + int(DataHandling.get_last_id())
+        self.id = 1 + DataHandling.get_last_id()
 
     @classmethod
     def from_str(cls, name_str):
@@ -77,7 +77,7 @@ class DataHandling:
             if len(rf.read()) == 0:
                 return 0
             rf.seek(0)
-            return rf.readlines()[-1].split(",")[0]
+            return int(rf.readlines()[-1].split(",")[0])
 
 
 class Session:
