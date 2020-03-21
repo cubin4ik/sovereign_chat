@@ -9,6 +9,12 @@ import os
 import random
 import time
 
+file_paths = {
+    "users": "data/users.txt",
+    "key": "data/key.txt",
+    "keys": "data.keys.txt"
+}
+
 
 class User:
     """Creating user instance"""
@@ -45,19 +51,18 @@ class DataHandling:
     """Data handling: saving & spitting"""
 
     @staticmethod
-    def save_to_database(database_path, user_id, admin, user_name, user_pass, f_name, l_name):
+    def save_to_database(user_id, admin, user_name, user_pass, f_name, l_name):
 
-        if database_path == "data/users.txt":
-            data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
+        data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
 
-            with open(database_path, "a") as write_database:
-                write_database.write(data)
+        with open(file_paths["users"], "a") as write_database:
+            write_database.write(data)
 
     @staticmethod
-    def user_exists(database_path, user_name):
+    def user_exists(user_name):
         """If user exists returns True"""
 
-        with open(database_path, "r") as read_database:
+        with open(file_paths["users"], "r") as read_database:
 
             while True:
                 line = read_database.readline()
@@ -73,11 +78,28 @@ class DataHandling:
     def get_last_id():
         """Spits the last registered user if"""
 
-        with open("data/users.txt", "r") as rf:
+        with open(file_paths["users"], "r") as rf:
             if len(rf.read()) == 0:
                 return 0
             rf.seek(0)
             return int(rf.readlines()[-1].split(",")[0])
+
+    @staticmethod
+    def check_pass(user_name, user_pass):
+        """Checks pair of name and password"""
+
+        with open(file_paths["users"], "r") as rf:
+            creds = rf.readline()
+
+            while creds:
+                creds_list = creds.strip().split(",")
+                if user_name == creds_list[2] and user_pass == creds_list[3]:
+                    print("SUCCESS")
+                    return True
+
+                creds = rf.readline()
+
+        return False
 
 
 class Session:
@@ -96,15 +118,15 @@ class Session:
     def put_key(key):
         """Puts key to keys holder"""
 
-        with open("data/keys.txt", "a") as wf:
+        with open(file_paths["keys"], "a") as wf:
             wf.write(key + "\n")
 
     @staticmethod
     def check_key(key):
         """Checks if user key is registered and logged in"""
 
-        if os.path.exists("data/keys.txt"):
-            with open("data/keys.txt", "r") as rf:
+        if os.path.exists(file_paths["keys"]):
+            with open(file_paths["keys"], "r") as rf:
                 check_key = rf.readline().rstrip("\n")
 
                 while check_key:
