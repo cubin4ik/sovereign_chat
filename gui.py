@@ -69,9 +69,16 @@ class EnterForm:
 class MainWindow:
     """Starts the application"""
 
-    def __init__(self):
+    def __init__(self, user_name="User"):
         root = Tk()
         root.title("SNet")
+
+        greeting_lbl = Label(root, text=f"Hello, {user_name}!")
+        greeting_lbl.place(relx=0.5, rely=0.2, anchor=CENTER)
+
+        exit_btn = Button(root, text="Log out",
+                          command=lambda: terminate_session(root))
+        exit_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
         root.mainloop()
 
 
@@ -82,13 +89,18 @@ def create_new_session():
         wf.write(new_sess.key)
 
 
+def terminate_session(root):
+    """Terminates current session"""
+
+    os.remove(file_paths["key"])
+
+
 def check_credentials(user_name, user_pass):
     """Checks if credentials are valid when login"""
 
     if DataHandling.user_exists(user_name):
         if DataHandling.check_pass(user_name, user_pass):
-            messagebox.showinfo("SNet", f"Hello, {user_name}")
-            MainWindow()
+            MainWindow(user_name=user_name)
             create_new_session()
         else:
             messagebox.showerror("SNet", "Incorrect password")
