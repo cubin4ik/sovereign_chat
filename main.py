@@ -5,6 +5,10 @@ login/register system with an availability to scale and grow or even changing th
 by Alejandro Suarez
 2020-February"""
 
+import os
+import random
+import time
+
 
 class User:
     """Creating user instance"""
@@ -51,7 +55,7 @@ class DataHandling:
 
     @staticmethod
     def user_exists(database_path, user_name):
-        """Getting data from database"""
+        """If user exists returns True"""
 
         with open(database_path, "r") as read_database:
 
@@ -81,27 +85,32 @@ class Session:
 
     def __init__(self, key=None):
         if key is None:
-            import random
-            import time
 
             # TODO: check how string formatting works!
-            self.key = str(random.randint(1000, 9999)) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
+            self.key = str(random.randint(0, 9999)).zfill(4) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
             # self.key = self.key[:30]
         else:
             self.key = key
 
-        # TODO: Check if session exists
+    @staticmethod
+    def put_key(key):
+        """Puts key to keys holder"""
+
+        with open("data/keys.txt", "a") as wf:
+            wf.write(key + "\n")
 
     @staticmethod
     def check_key(key):
         """Checks if user key is registered and logged in"""
 
-        pass
-        # resp = False  # Not logged in
-        # if os.path.exists("data/key.txt"):
-        #     with open("data/key.txt", "r") as rf:
-        #         host_socket = Connection("client")
-        #         resp = bool(host_socket.send_req(rf.read()))  # Either logged in or not (True or False)
+        if os.path.exists("data/keys.txt"):
+            with open("data/keys.txt", "r") as rf:
+                check_key = rf.readline().rstrip("\n")
 
-        # return resp
+                while check_key:
+                    if check_key == key:
+                        return True
+                    check_key = rf.readline().rstrip("\n")
+
+        return False
 

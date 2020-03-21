@@ -6,21 +6,65 @@ from tkinter import messagebox
 from main import *
 
 
-# def create_new_session():
-#     new_sess = Session()
-#     with open("data/key.txt", "w") as wf:
-#         wf.write(new_sess.key)
-#
-#
-# if os.path.exists("data/key.txt"):
-#     with open("data/key.txt", "r") as rf:
-#         session_stat = Session.check_key(rf.read())
-#     if session_stat:
-#         pass  # TODO: enter the system
-#     else:
-#         create_new_session()
-# else:
-#     create_new_session()
+class EnterForm:
+    """Creates login and registration form"""
+
+    def __init__(self, form_type=None):
+        self.root = Tk()
+        self.root.title("SNet")
+        self.root.geometry("250x200")
+        # self.root.resizable(0, 0)
+        self.root.minsize(width=250, height=200)
+
+        self.main_frame = Frame(self.root)
+        self.main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        name_lbl = Label(self.main_frame, text="User name")
+        name_lbl.grid(row=0, column=0, sticky=E)
+        pass_lbl = Label(self.main_frame, text="Password")
+        pass_lbl.grid(row=1, column=0, sticky=E)
+
+        self.user_name_entry = Entry(self.main_frame)
+        self.user_name_entry.grid(row=0, column=1)
+        self.user_pass_entry = Entry(self.main_frame, show="*")
+        self.user_pass_entry.grid(row=1, column=1)
+
+        if not form_type or form_type.lower() == "log":
+            self.log_form()
+        elif form_type.lower() == "reg":
+            self.reg_form()
+        else:
+            raise ValueError("Check the form type")
+
+        self.root.mainloop()
+
+    def reg_form(self):
+        """Creates registration buttons"""
+
+        register_btn = Button(self.main_frame, text="Register")
+        register_btn.bind("<Button-1>", lambda event: [new_user_reg(self.user_name_entry.get(), self.user_pass_entry.get()),
+                                                       self.root.destroy()])
+        register_btn.grid(row=2, column=1, sticky=E)
+
+    def log_form(self):
+        """Creates login buttons"""
+
+        login_btn = Button(self.main_frame, text="Login")
+        login_btn.grid(row=2, column=1, sticky=E)
+
+        empty_frame = Frame(self.main_frame, height=20)
+        empty_frame.grid(row=3, columnspan=2)
+
+        create_acc_btn = Button(self.main_frame, text="Create new account", bd=0, fg="GREY",
+                                command=lambda: EnterForm("reg"))
+        create_acc_btn.grid(row=4, columnspan=2)
+
+
+def create_new_session():
+    new_sess = Session()
+    new_sess.put_key(new_sess.key)
+    with open("data/key.txt", "w") as wf:
+        wf.write(new_sess.key)
 
 
 def new_user_reg(user_name, user_pass):
@@ -42,27 +86,14 @@ def new_user_reg(user_name, user_pass):
         messagebox.showerror("SNet", "User already exists")
 
 
-root = Tk()
-root.title("SNet")
-root.geometry("250x200")
-# root.resizable(0, 0)
-root.minsize(width=250, height=200)
+if os.path.exists("data/key.txt"):
+    with open("data/key.txt", "r") as rf:
+        my_key = rf.read().rstrip("\n")
+        session_stat = Session.check_key(my_key)
+    if session_stat:
+        print(f"System entered")  # TODO: enter the system
+    else:
+        EnterForm("log")  # TODO: Spit registration form and only then create session
+else:
+    EnterForm("log")  # TODO: Spit registration form and only then create session
 
-main_frame = Frame(root)
-main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
-name_lbl = Label(main_frame, text="User name")
-name_lbl.grid(row=0, column=0, sticky=E)
-pass_lbl = Label(main_frame, text="Password")
-pass_lbl.grid(row=1, column=0, sticky=E)
-
-user_name_entry = Entry(main_frame)
-user_name_entry.grid(row=0, column=1)
-user_pass_entry = Entry(main_frame, show="*")
-user_pass_entry.grid(row=1, column=1)
-
-register_btn = Button(main_frame, text="Register")
-register_btn.bind("<Button-1>", lambda event: new_user_reg(user_name_entry.get(), user_pass_entry.get()))
-register_btn.grid(row=2, column=1, sticky=E)
-
-root.mainloop()

@@ -1,6 +1,7 @@
 """Test your ideas here"""
 
 import time
+from tkinter import *
 
 
 def perf_check():
