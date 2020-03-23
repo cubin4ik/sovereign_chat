@@ -40,6 +40,7 @@ class Connection:
         else:
             raise ValueError("You need to specify connection type: \"server\" or \"client\"")
 
+    # TODO: Check if this method can be static
     def serv_client(self, client_socket):
         """A thread of serving one client"""
 

@@ -5,6 +5,16 @@ login/register system with an availability to scale and grow or even changing th
 by Alejandro Suarez
 2020-February"""
 
+import os
+import random
+import time
+
+file_paths = {
+    "users": "data/users.txt",
+    "key": "data/key.txt",
+    "keys": "data.keys.txt"
+}
+
 
 class User:
     """Creating user instance"""
@@ -15,7 +25,7 @@ class User:
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
-        self.id = 1 + int(DataHandling.get_last_id())
+        self.id = 1 + DataHandling.get_last_id()
 
     @classmethod
     def from_str(cls, name_str):
@@ -41,19 +51,18 @@ class DataHandling:
     """Data handling: saving & spitting"""
 
     @staticmethod
-    def save_to_database(database_path, user_id, admin, user_name, user_pass, f_name, l_name):
+    def save_to_database(user_id, admin, user_name, user_pass, f_name, l_name):
 
-        if database_path == "data/users.txt":
-            data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
+        data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
 
-            with open(database_path, "a") as write_database:
-                write_database.write(data)
+        with open(file_paths["users"], "a") as write_database:
+            write_database.write(data)
 
     @staticmethod
-    def user_exists(database_path, user_name):
-        """Getting data from database"""
+    def user_exists(user_name):
+        """If user exists returns True"""
 
-        with open(database_path, "r") as read_database:
+        with open(file_paths["users"], "r") as read_database:
 
             while True:
                 line = read_database.readline()
@@ -69,11 +78,28 @@ class DataHandling:
     def get_last_id():
         """Spits the last registered user if"""
 
-        with open("data/users.txt", "r") as rf:
+        with open(file_paths["users"], "r") as rf:
             if len(rf.read()) == 0:
                 return 0
             rf.seek(0)
-            return rf.readlines()[-1].split(",")[0]
+            return int(rf.readlines()[-1].split(",")[0])
+
+    @staticmethod
+    def check_pass(user_name, user_pass):
+        """Checks pair of name and password"""
+
+        with open(file_paths["users"], "r") as rf:
+            creds = rf.readline()
+
+            while creds:
+                creds_list = creds.strip().split(",")
+                if user_name == creds_list[2] and user_pass == creds_list[3]:
+                    print("SUCCESS")
+                    return True
+
+                creds = rf.readline()
+
+        return False
 
 
 class Session:
@@ -81,27 +107,32 @@ class Session:
 
     def __init__(self, key=None):
         if key is None:
-            import random
-            import time
 
             # TODO: check how string formatting works!
-            self.key = str(random.randint(1000, 9999)) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
+            self.key = str(random.randint(0, 9999)).zfill(4) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
             # self.key = self.key[:30]
         else:
             self.key = key
 
-        # TODO: Check if session exists
+    @staticmethod
+    def put_key(key):
+        """Puts key to keys holder"""
+
+        with open(file_paths["keys"], "a") as wf:
+            wf.write(key + "\n")
 
     @staticmethod
     def check_key(key):
         """Checks if user key is registered and logged in"""
 
-        pass
-        # resp = False  # Not logged in
-        # if os.path.exists("data/key.txt"):
-        #     with open("data/key.txt", "r") as rf:
-        #         host_socket = Connection("client")
-        #         resp = bool(host_socket.send_req(rf.read()))  # Either logged in or not (True or False)
+        if os.path.exists(file_paths["keys"]):
+            with open(file_paths["keys"], "r") as rf:
+                check_key = rf.readline().rstrip("\n")
 
-        # return resp
+                while check_key:
+                    if check_key == key:
+                        return True
+                    check_key = rf.readline().rstrip("\n")
+
+        return False
 
