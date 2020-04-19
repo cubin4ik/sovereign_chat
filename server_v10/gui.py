@@ -47,7 +47,8 @@ class EnterForm:
         """Creates registration buttons"""
 
         register_btn = Button(self.main_frame, text="Register")
-        register_btn.bind("<Button-1>", lambda event: [new_user_reg(self.user_name_entry.get(), self.user_pass_entry.get()),
+        register_btn.bind("<Button-1>", lambda event: [new_user_reg(self.user_name_entry.get(),
+                                                                    self.user_pass_entry.get()),
                                                        self.root.destroy()])
         register_btn.grid(row=2, column=1, sticky=E)
 
@@ -55,7 +56,8 @@ class EnterForm:
         """Creates login buttons"""
 
         login_btn = Button(self.main_frame, text="Login",
-                           command=lambda: check_credentials(self.user_name_entry.get(), self.user_pass_entry.get()))
+                           command=lambda: check_credentials(self.user_name_entry.get(),
+                                                             self.user_pass_entry.get()))
         login_btn.grid(row=2, column=1, sticky=E)
 
         empty_frame = Frame(self.main_frame, height=20)
@@ -77,7 +79,7 @@ class MainWindow:
         greeting_lbl.place(relx=0.5, rely=0.2, anchor=CENTER)
 
         exit_btn = Button(root, text="Log out",
-                          command=lambda: terminate_session(root))
+                          command=terminate_session)
         exit_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
         root.mainloop()
 
@@ -89,7 +91,7 @@ def create_new_session():
         wf.write(new_sess.key)
 
 
-def terminate_session(root):
+def terminate_session():
     """Terminates current session"""
 
     os.remove(file_paths["key"])

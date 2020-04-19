@@ -5,14 +5,14 @@ login/register system with an availability to scale and grow or even changing th
 by Alejandro Suarez
 2020-February"""
 
+# standard libraries
 import os
 import random
 import time
 
 file_paths = {
     "users": "data/users.txt",
-    "key": "data/key.txt",
-    "keys": "data.keys.txt"
+    "keys": "data/keys.txt"
 }
 
 
@@ -25,7 +25,7 @@ class User:
         self.f_name = f_name.lower()
         self.l_name = l_name.lower()
         self.admin = admin
-        self.id = 1 + DataHandling.get_last_id()
+        self.id = 1 + int(DataHandling.get_last_id())
 
     @classmethod
     def from_str(cls, name_str):
@@ -70,7 +70,7 @@ class DataHandling:
                     break
 
                 values_list = line.split(",")
-                if user_name.lower() in values_list:
+                if user_name.lower() == values_list[2]:
                     return True
             return False
 
@@ -80,9 +80,9 @@ class DataHandling:
 
         with open(file_paths["users"], "r") as rf:
             if len(rf.read()) == 0:
-                return 0
+                return str(0)
             rf.seek(0)
-            return int(rf.readlines()[-1].split(",")[0])
+            return rf.readlines()[-1].split(",")[0]
 
     @staticmethod
     def check_pass(user_name, user_pass):
@@ -93,7 +93,7 @@ class DataHandling:
 
             while creds:
                 creds_list = creds.strip().split(",")
-                if user_name == creds_list[2] and user_pass == creds_list[3]:
+                if user_name.lower() == creds_list[2] and user_pass == creds_list[3]:
                     print("SUCCESS")
                     return True
 
@@ -101,25 +101,50 @@ class DataHandling:
 
         return False
 
+    @staticmethod
+    def get_user_data(key):
+        """Returns non sensitive data about user"""
+
+        with open(file_paths["keys"], "r") as rf:
+            line = rf.readline()
+
+            while line:
+                if key in line:
+                    user = line[len(key):].rstrip()
+                    print(f"USER FOUND FROM KEY: {user}")
+                    break
+                line = rf.readline()
+
+        with open(file_paths["users"], "r") as rf:
+            user_data = rf.readline()
+            print("SEARCHING FOR USER DATA: ", user)
+
+            while user_data:
+                if user_data.split(",")[2] == user:
+                    print(f"DATA: {user_data} | {user}")
+                    return user_data
+
+                user_data = rf.readline()
+
 
 class Session:
     """Handles operations on sessions and controls it"""
 
-    def __init__(self, key=None):
+    def __init__(self, user_name, key=None):
         if key is None:
-
             # TODO: check how string formatting works!
-            self.key = str(random.randint(0, 9999)).zfill(4) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time())
+            self.key = str(random.randint(0, 9999)).zfill(4) + "_t_stamp:_" + ("{:#.%df}" % (10, )).format(time.time()) + user_name.lower()
             # self.key = self.key[:30]
+            self.put_key()
         else:
             self.key = key
+            self.put_key()
 
-    @staticmethod
-    def put_key(key):
+    def put_key(self):
         """Puts key to keys holder"""
 
         with open(file_paths["keys"], "a") as wf:
-            wf.write(key + "\n")
+            wf.write(self.key + "\n")
 
     @staticmethod
     def check_key(key):
@@ -130,9 +155,24 @@ class Session:
                 check_key = rf.readline().rstrip("\n")
 
                 while check_key:
-                    if check_key == key:
+                    if key in check_key:
                         return True
                     check_key = rf.readline().rstrip("\n")
 
         return False
+
+    @staticmethod
+    def terminate_session(key):
+        """Deletes key of terminated session"""
+
+        with open(file_paths["keys"], "r") as wf:
+
+            while True:
+                key_line = wf.readline()
+
+                if not key_line:
+                    break
+                # TODO: Find how to remove a specific line in a file
+                if key_line == key:
+                    pass
 

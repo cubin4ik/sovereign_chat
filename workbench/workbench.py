@@ -1,36 +1,47 @@
-"""Test your ideas here"""
-
-import time
 from tkinter import *
 
+root = Tk()
+root.title("SNet Chat")
+root.geometry("400x500")
+root.minsize(width=300, height=400)
 
-def perf_check():
-    start_time = time.perf_counter()
+work_frame = Frame(root, bg="YELLOW")
+work_frame.pack(fill=BOTH, expand=TRUE)
 
-    with open("workbench.txt", "r") as rf:
-        stat = rf.readlines()[-1]
-        print(stat)
+title_frame = Frame(work_frame, bg="BLUE", height=50)
+title_frame.pack(side=TOP, fill=X)
 
-    # with open("workbench.txt", "r") as rf:
-    #     while True:
-    #         stat = rf.readline()
-    #         print(stat)
-    #         if not stat:
-    #             break
+lbl = Label(title_frame, text="Cubin4ik")
+lbl.pack(side=LEFT)
 
-    stop_time = time.perf_counter()
+set_img = PhotoImage(file="../client_v10/img/gear_small.png")
+btn_send = Button(title_frame, text="Send", image=set_img, bd=0, bg="RED")
+btn_send.pack(side=RIGHT)
+# btn_send.pack_propagate(0)
 
-    print(f"DIFF: {stop_time - start_time}")
+set_img = PhotoImage(file="../client_v10/img/gear_small.png")
+btn_send = Button(title_frame, text="Send", image=set_img, bd=0, bg="RED")
+btn_send.pack(side=RIGHT)
 
-    # 0.040541499999999994 - using [-1]
-    # 0.485154 - using all file loop
+ctr_frame = Frame(work_frame, bg="RED", height=50)
+ctr_frame.pack(fill=X, side=BOTTOM)
 
 
-def get_last_id():
-    with open("../data/users.txt", "r") as rf:
-        text = rf.readlines()[-1].split(",")[0]
-        if not text:
-            return "NO"
-        else:
-            return text
+btn_send = Button(ctr_frame, text="Send", image=set_img, bd=0, bg="RED")
+btn_send.pack(side=RIGHT)
+# btn_send.pack_propagate(0)
 
+msg_frame = Frame(work_frame, bg="GREY", height=100)
+msg_frame.pack(fill=X, side=BOTTOM)
+msg_frame.pack_propagate(0)
+
+ent = Entry(msg_frame)
+ent.pack(fill=BOTH, side=LEFT, expand=TRUE)
+
+chat_frame = Frame(work_frame, bg="WHITE")
+chat_frame.pack(fill=BOTH, side=BOTTOM, expand=TRUE)
+
+chat_win = Text(chat_frame)
+chat_win.pack(fill=BOTH, side=BOTTOM, expand=TRUE)
+
+root.mainloop()
