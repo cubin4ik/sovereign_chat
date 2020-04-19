@@ -152,7 +152,7 @@ class Application(Frame):
         lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
         exit_img = PhotoImage(file="img/button_exit_small.png")
-        exit_btn = Button(title_frame, text="log out", image=exit_img, font=(standard_theme["FONT"], "10"),
+        exit_btn = Button(title_frame, text="log out", image=exit_img,
                           bd=0, bg=standard_theme["BTN_BG"],
                           activebackground=standard_theme["BTN_BG"],
                           command=lambda: [Session.terminate_session(),
@@ -162,6 +162,13 @@ class Application(Frame):
                                            self.log_form()])
         exit_btn.image = exit_img
         exit_btn.pack(side=RIGHT, padx=(20, 20), pady=10)
+
+        list_img = PhotoImage(file="img/active_users_small.png")
+        list_btn = Button(title_frame, text="active users", image=list_img, bd=0, bg=standard_theme["BTN_BG"],
+                          activebackground=standard_theme["BTN_BG"],
+                          command=lambda: self.active_users_form())
+        list_btn.image = list_img
+        list_btn.pack(side=RIGHT, padx=(20, 0), pady=10)
 
         # Create the bottom frame where Button to send messages is located
         ctr_frame = Frame(work_frame, height=5, bg=standard_theme["GREY"])
@@ -235,6 +242,25 @@ class Application(Frame):
         l_name_info.grid(row=2, column=1, sticky=W)
         admin_info = Label(sett_frame, text=self.user.admin)
         admin_info.grid(row=3, column=1, sticky=W)
+
+    @staticmethod
+    def active_users_form():
+        """Shows active users"""
+
+        master = Toplevel()
+        master.title("SNet Active users")
+        master.geometry("250x200")
+        master.resizable(0, 1)
+        master.minsize(width=200, height=200)
+
+        users_list = "\n".join(Session.get_users_list().split(","))
+
+        title_lbl = Label(master, text="Users online:", font=12)
+        title_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
+
+        print(repr(users_list))
+        user_list_lbl = Label(master, text=users_list, font=10)
+        user_list_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
 
     def send_click(self):
         """Sends message"""

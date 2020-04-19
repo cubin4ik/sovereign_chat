@@ -92,6 +92,13 @@ class Connection:
                 elif header == "DELETEKEY":
                     key = body
                     Session.terminate_session(key)
+                elif header == "USERSLIST":
+                    if Connection.active_users != {}:
+                        users_list = ""
+                        for user in Connection.active_users:
+                            users_list += f"{user},"
+                        client_socket.send(self.format_msg(users_list))
+                        print(f"USER LIST: {users_list}")
                 elif header == "STAY_ALIVE":
                     user_name = body
                     Connection.active_users[user_name] = client_socket
