@@ -171,15 +171,15 @@ class Application(Frame):
         entry_frame = Frame(work_frame, bg=standard_theme["GREY"])
         entry_frame.pack(fill=X, side=BOTTOM)
 
-        ent_text_frame = Frame(entry_frame, bg=standard_theme["ENT_BG"], )
-        ent_text_frame.pack(fill=X, side=LEFT, expand=TRUE, pady=(5, 0), padx=(5, 0))
-
         send_img = PhotoImage(file="img/button_send.png")
-        send_btn = Button(ent_text_frame, font=10, text="send", image=send_img,
+        send_btn = Button(entry_frame, font=10, text="send", image=send_img,
                           bd=0, bg=standard_theme["GREY"], activebackground=standard_theme["GREY"],
                           command=self.send_click)
         send_btn.image = send_img
         send_btn.pack(side=RIGHT)
+
+        ent_text_frame = Frame(entry_frame, bg=standard_theme["ENT_BG"], )
+        ent_text_frame.pack(fill=X, side=LEFT, expand=TRUE, pady=(5, 0), padx=(5, 0))
 
         self.entry_box = Text(ent_text_frame, bd=0, height=1,
                               bg=standard_theme["ENT_BG"], font=standard_theme["FONT"])
