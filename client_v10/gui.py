@@ -113,7 +113,7 @@ class Application(Frame):
         self.user = User.from_key()
         self.master.title("SNet Chat")
         self.master.geometry("300x400")
-        self.master.minsize(width=300, height=400)
+        self.master.minsize(width=300, height=200)
         # self.master.resizable(width=FALSE, height=FALSE)
 
         standard_theme = {
@@ -146,10 +146,10 @@ class Application(Frame):
         avatar.image = avatar_pic
         avatar.pack(side=LEFT, padx=(20, 0), pady=10)
 
-        lbl = Label(title_frame, text=self.user.user_name.capitalize(),
+        name_lbl = Label(title_frame, text=self.user.user_name.capitalize(),
                     bd=0, bg=standard_theme["TOP_BAR"],
-                    font=(standard_theme["FONT"], "10", "bold"))
-        lbl.pack(side=LEFT, padx=(30, 0), pady=10)
+                    font=(standard_theme["FONT"], 10, "bold"))
+        name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
         exit_img = PhotoImage(file="img/button_exit_small.png")
         exit_btn = Button(title_frame, text="log out", image=exit_img,
@@ -249,18 +249,26 @@ class Application(Frame):
 
         master = Toplevel()
         master.title("SNet Active users")
-        master.geometry("250x200")
+        # master.geometry("250x200")
         master.resizable(0, 1)
-        master.minsize(width=200, height=200)
+        master.minsize(width=200, height=30)
 
         users_list = "\n".join(Session.get_users_list().split(","))
 
-        title_lbl = Label(master, text="Users online:", font=12, justify=LEFT)
-        title_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
+        title_frame = Frame(master, bg="#54b2ff", height=20)
+        title_frame.pack(side=TOP, fill=X)
+
+        title_lbl = Label(title_frame, text="Users online",
+                          bd=0, bg="#54b2ff",
+                          font=("Arial", 10, "bold"))
+        title_lbl.pack(side=LEFT, padx=(15, 0), pady=10)
+
+        decor_frame = Frame(master, bg="#54b2ff", width=5)
+        decor_frame.pack(side=LEFT, anchor=W, fill=Y, padx=(15, 0), pady=(0, 10))
 
         print(repr(users_list))
-        user_list_lbl = Label(master, text=users_list, font=10, justify=LEFT)
-        user_list_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
+        user_list_lbl = Label(master, text=users_list, font=("Arial", 10), justify=LEFT)
+        user_list_lbl.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
 
     def send_click(self):
         """Sends message"""

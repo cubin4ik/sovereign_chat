@@ -96,7 +96,7 @@ class Connection:
                     if Connection.active_users != {}:
                         users_list = ""
                         for user in Connection.active_users:
-                            users_list += f"{user},"
+                            users_list += f"{user.capitalize()},"
                         client_socket.send(self.format_msg(users_list))
                         print(f"USER LIST: {users_list}")
                 elif header == "STAY_ALIVE":
