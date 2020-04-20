@@ -216,13 +216,29 @@ class Application(Frame):
         """Settings"""
 
         master = Toplevel()
-        master.title("SNet Settings")
-        master.geometry("250x200")
-        # self.root.resizable(0, 0)
-        master.minsize(width=250, height=200)
+        master.title("SNet Active users")
+        # master.geometry("250x200")
+        master.resizable(0, 0)
+        master.minsize(width=200, height=30)
+
+        users_list = "\n".join(Session.get_users_list().split(","))
+
+        title_frame = Frame(master, bg="#54b2ff", height=20)
+        title_frame.pack(side=TOP, fill=X)
+
+        title_lbl = Label(title_frame, text="Profile",
+                          bd=0, bg="#54b2ff",
+                          font=("Arial", 10, "bold"))
+        title_lbl.pack(side=LEFT, padx=(15, 0), pady=10)
+
+        decor_frame = Frame(master, bg="#54b2ff", width=5)
+        decor_frame.pack(side=LEFT, anchor=W, fill=Y, padx=(15, 0), pady=(0, 10))
+
+        # user_list_lbl = Label(master, text=users_list, font=("Arial", 10), justify=LEFT)
+        # user_list_lbl.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
 
         sett_frame = Frame(master)
-        sett_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        sett_frame.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
 
         name_lbl = Label(sett_frame, text="User name: ")
         name_lbl.grid(row=0, column=0, sticky=E)
@@ -233,14 +249,14 @@ class Application(Frame):
         admin_lbl = Label(sett_frame, text="Admin: ")
         admin_lbl.grid(row=3, column=0, sticky=E)
 
-        user_name_info = Label(sett_frame, text=self.user.user_name)
+        user_name_info = Label(sett_frame, text=self.user.user_name.capitalize(), font=("Arial", 10, "bold"))
         user_name_info.grid(row=0, column=1, sticky=W)
-        f_name_info = Label(sett_frame, text=self.user.f_name)
+        f_name_info = Label(sett_frame, text=self.user.f_name.capitalize(), font=("Arial", 10, "bold"))
         f_name_info.grid(row=1, column=1, sticky=W)
-        l_name_info = Label(sett_frame, text=self.user.l_name)
+        l_name_info = Label(sett_frame, text=self.user.l_name.capitalize(), font=("Arial", 10, "bold"))
         print(repr(self.user.l_name))
         l_name_info.grid(row=2, column=1, sticky=W)
-        admin_info = Label(sett_frame, text=self.user.admin)
+        admin_info = Label(sett_frame, text=self.user.admin, font=("Arial", 10, "bold"))
         admin_info.grid(row=3, column=1, sticky=W)
 
     @staticmethod
