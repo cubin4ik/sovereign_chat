@@ -6,7 +6,7 @@ import socket
 class Connection:
     """Handles all the connections using sockets"""
 
-    IP = "Home"
+    IP = socket.gethostname()
     PORT = 8000
     BUFF_SIZE = 2 ** 7
     HEADER_SIZE = 10
