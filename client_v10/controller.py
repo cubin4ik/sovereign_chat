@@ -299,6 +299,7 @@ class Chat:
                     # self.refresh_widget("EVENT", "Server stopped the connection")
                     # messagebox.showerror("SNet", "Server stopped the connection")
                     print("Server stopped the connection")
+                    # Connection.close_connection(self.client_socket)  # TODO: Find if all sockets are closing correctly
                     break
                 else:
                     header, user_name, msg = msg_in.split("|")

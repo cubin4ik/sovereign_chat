@@ -52,8 +52,7 @@ class Connection:
             self.host_socket.send(msg.encode("utf-8"))
             resp = self.receive_msg()
 
-            self.host_socket.shutdown(socket.SHUT_RDWR)  # TODO: Replace with "with" statement (on server side too)
-            self.host_socket.close()
+            self.close_connection(self.host_socket)
 
             return resp
 
@@ -70,3 +69,10 @@ class Connection:
             print("Message broadcasted: ", msg)
         except ConnectionResetError:
             print("Connection failed")
+
+    @staticmethod
+    def close_connection(sock):
+        """Closes given sockets"""
+
+        sock.shutdown(socket.SHUT_RDWR)  # TODO: Replace with "with" statement (on server side too)
+        sock.close()
