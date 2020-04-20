@@ -255,11 +255,11 @@ class Application(Frame):
 
         users_list = "\n".join(Session.get_users_list().split(","))
 
-        title_lbl = Label(master, text="Users online:", font=12)
+        title_lbl = Label(master, text="Users online:", font=12, justify=LEFT)
         title_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
 
         print(repr(users_list))
-        user_list_lbl = Label(master, text=users_list, font=10)
+        user_list_lbl = Label(master, text=users_list, font=10, justify=LEFT)
         user_list_lbl.pack(side=TOP, anchor=W, padx=10, pady=(5, 5))
 
     def send_click(self):
