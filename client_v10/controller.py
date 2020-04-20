@@ -261,6 +261,19 @@ class Session:
         except TimeoutError:
             messagebox.showerror("SNet", "Server dropped")
 
+    @staticmethod
+    def get_users_list():
+        """Returns list of active users"""
+
+        try:
+            client = Connection()
+            users_list = client.request_server(f"USERSLIST|DUMMY")
+            return users_list
+        except ConnectionError:
+            messagebox.showerror("SNet", "Connection lost")
+        except TimeoutError:
+            messagebox.showerror("SNet", "Server dropped")
+
 
 class Chat:
     """Sends and receives messages"""
