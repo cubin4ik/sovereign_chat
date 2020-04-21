@@ -85,6 +85,10 @@ class Connection:
                 elif header == "ADD_USERS":
                     user_data = body.split(";")
                     DataHandling.save_to_database(*user_data)
+                elif header == "UPDATE_ME":
+                    user_name, f_name, l_name = body.split(";")
+                    result = DataHandling.update_database(user_name, f_name, l_name)  # TODO: Finish the response
+                    client_socket.send(self.format_msg(str(result)))
                 elif header == "GETLASTID":
                     resp = DataHandling.get_last_id()
                     client_socket.send(self.format_msg(resp))

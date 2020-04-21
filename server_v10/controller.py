@@ -59,6 +59,46 @@ class DataHandling:
             write_database.write(data)
 
     @staticmethod
+    def update_database(user, f_name, l_name, avatar=None):
+        """Updates database"""
+
+        if f_name == "":
+            f_name = "None"
+        if l_name == "":
+            l_name = "None"
+
+        if os.path.exists("data/users_tmp.txt"):
+            os.remove("data/users_tmp.txt")
+
+        # TODO: Test on multiple simultaneous connection to file
+        with open("data/users.txt", "r") as rf:
+            with open("data/users_tmp.txt", "a") as wf:
+
+                while True:
+                    line = rf.readline().strip()
+                    if not line:
+                        break
+                    line_updated = line
+                    user_data = line.split(",")
+                    if user.lower() == user_data[2]:
+                        user_data[4] = f_name
+                        user_data[5] = l_name
+                        line_updated = ",".join(user_data)
+                        print("DATA TO UPDATE: ", line_updated)
+                    wf.write(line_updated + "\n")
+
+        with open("data/users_tmp.txt", "r") as rf:
+            with open("data/users.txt", "w") as wf:
+
+                while True:
+                    line = rf.readline()
+                    if not line:
+                        break
+                    wf.write(line)
+
+        os.remove("data/users_tmp.txt")
+
+    @staticmethod
     def user_exists(user_name):
         """If user exists returns True"""
 

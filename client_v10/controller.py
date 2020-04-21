@@ -66,6 +66,11 @@ class User:
                    l_name=data[5].rstrip(),
                    user_id=data[0])
 
+    def update(self, f_name=None, l_name=None):
+        """Updates user data"""
+
+        DataHandling.update_database(self.user_name, f_name, l_name)
+
 
 class Admin(User):
     """Admin account of a user"""
@@ -86,6 +91,23 @@ class DataHandling:
 
         client = Connection()
         client.request_server(f"ADD_USERS|{data}")  # Any message should start with method by 9 characters
+
+    @staticmethod
+    def update_database(user, f_name, l_name, avatar=None):
+        """Updates database with given values"""
+
+        try:
+            client = Connection()
+            status = client.request_server(f"UPDATE_ME|{user};{f_name};{l_name}")
+
+            if status == "False":
+                messagebox.showerror("SNet", "Could not update")
+            else:
+                messagebox.showinfo("SNet", "Profile updated")
+        except ConnectionError:
+            messagebox.showerror("SNet", "Server is not responding")
+        except TimeoutError:
+            messagebox.showerror("SNet", "Server dropped")
 
     @staticmethod
     def user_exists(user_name):
@@ -174,6 +196,7 @@ class Session:
             else:
                 return False
         else:
+            # messagebox.showerror("SNet", "Local key not found")
             return False
 
     @staticmethod

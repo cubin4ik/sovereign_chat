@@ -8,10 +8,6 @@ import threading
 # local files
 from client_v10.controller import User, Session, Chat
 
-file_paths = {
-    "key": "data/key.txt"
-}
-
 
 class Application(Frame):
 
@@ -116,7 +112,7 @@ class Application(Frame):
         self.master.minsize(width=300, height=200)
         # self.master.resizable(width=FALSE, height=FALSE)
 
-        standard_theme = {
+        self.standard_theme = {
             "TOP_BAR": "#54b2ff",
             "BTN_BG": "#54b2ff",
             "BTN_FG": "#fcff9c",
@@ -130,7 +126,7 @@ class Application(Frame):
         work_frame.pack(fill=BOTH, expand=TRUE)
 
         # Create the title field with user name and logout button
-        title_frame = Frame(work_frame, bg=standard_theme["TOP_BAR"], height=50)
+        title_frame = Frame(work_frame, bg=self.standard_theme["TOP_BAR"], height=50)
         title_frame.pack(side=TOP, fill=X)
         # title_frame.pack_propagate(0)
 
@@ -140,21 +136,21 @@ class Application(Frame):
         # background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         avatar_pic = PhotoImage(file=r"img/avatar_blank_small.png")
-        avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=standard_theme["BTN_BG"],
-                        activebackground=standard_theme["BTN_BG"],
-                        command=lambda: self.setting_form())
+        avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
+                        activebackground=self.standard_theme["BTN_BG"],
+                        command=lambda: self.profile_form())
         avatar.image = avatar_pic
         avatar.pack(side=LEFT, padx=(20, 0), pady=10)
 
         name_lbl = Label(title_frame, text=self.user.user_name.capitalize(),
-                    bd=0, bg=standard_theme["TOP_BAR"],
-                    font=(standard_theme["FONT"], 10, "bold"))
+                    bd=0, bg=self.standard_theme["TOP_BAR"],
+                    font=(self.standard_theme["FONT"], 10, "bold"))
         name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
         exit_img = PhotoImage(file="img/button_exit_small.png")
         exit_btn = Button(title_frame, text="log out", image=exit_img,
-                          bd=0, bg=standard_theme["BTN_BG"],
-                          activebackground=standard_theme["BTN_BG"],
+                          bd=0, bg=self.standard_theme["BTN_BG"],
+                          activebackground=self.standard_theme["BTN_BG"],
                           command=lambda: [Session.terminate_session(),
                                            self.chat_controller.stop_refresh(),
                                            work_frame.destroy(),
@@ -164,41 +160,41 @@ class Application(Frame):
         exit_btn.pack(side=RIGHT, padx=(20, 20), pady=10)
 
         list_img = PhotoImage(file="img/active_users_small.png")
-        list_btn = Button(title_frame, text="active users", image=list_img, bd=0, bg=standard_theme["BTN_BG"],
-                          activebackground=standard_theme["BTN_BG"],
+        list_btn = Button(title_frame, text="active users", image=list_img, bd=0, bg=self.standard_theme["BTN_BG"],
+                          activebackground=self.standard_theme["BTN_BG"],
                           command=lambda: self.active_users_form())
         list_btn.image = list_img
         list_btn.pack(side=RIGHT, padx=(20, 0), pady=10)
 
         # Create the bottom frame where Button to send messages is located
-        ctr_frame = Frame(work_frame, height=5, bg=standard_theme["GREY"])
+        ctr_frame = Frame(work_frame, height=5, bg=self.standard_theme["GREY"])
         ctr_frame.pack(fill=X, side=BOTTOM)
 
         # Create the frame and the box to enter message
-        entry_frame = Frame(work_frame, bg=standard_theme["GREY"])
+        entry_frame = Frame(work_frame, bg=self.standard_theme["GREY"])
         entry_frame.pack(fill=X, side=BOTTOM)
 
         send_img = PhotoImage(file="img/button_send.png")
         send_btn = Button(entry_frame, font=10, text="send", image=send_img,
-                          bd=0, bg=standard_theme["GREY"], activebackground=standard_theme["GREY"],
+                          bd=0, bg=self.standard_theme["GREY"], activebackground=self.standard_theme["GREY"],
                           command=self.send_click)
         send_btn.image = send_img
         send_btn.pack(side=RIGHT)
 
-        ent_text_frame = Frame(entry_frame, bg=standard_theme["ENT_BG"], )
+        ent_text_frame = Frame(entry_frame, bg=self.standard_theme["ENT_BG"], )
         ent_text_frame.pack(fill=X, side=LEFT, expand=TRUE, pady=(5, 0), padx=(5, 0))
 
         self.entry_box = Text(ent_text_frame, bd=0, height=1,
-                              bg=standard_theme["ENT_BG"], font=standard_theme["FONT"])
+                              bg=self.standard_theme["ENT_BG"], font=self.standard_theme["FONT"])
         self.entry_box.bind("<Return>", lambda event: [self.entry_box.config(state=DISABLED), self.send_press()])
         # self.entry_box.bind("<KeyRelease-Return>", lambda event: self.send_press())
         self.entry_box.pack(fill=X, side=LEFT, expand=TRUE, padx=5, pady=5)
 
         # Create a Chat window
-        chat_frame = Frame(work_frame, bg=standard_theme["ENT_BG"])
+        chat_frame = Frame(work_frame, bg=self.standard_theme["ENT_BG"])
         chat_frame.pack(fill=BOTH, side=BOTTOM, expand=TRUE)
 
-        self.chat_win = Text(chat_frame, bd=0, bg=standard_theme["ENT_BG"], font=standard_theme["FONT"])
+        self.chat_win = Text(chat_frame, bd=0, bg=self.standard_theme["ENT_BG"], font=self.standard_theme["FONT"])
         # self.chat_win.insert(END, f"Hello, {self.user.user_name}!\n")
         self.chat_win.config(state=DISABLED)
         self.chat_win.pack(fill=BOTH, side=BOTTOM, expand=TRUE, padx=5, pady=5)
@@ -212,7 +208,7 @@ class Application(Frame):
         # self.scrollbar = Scrollbar(chat_frame, command=self.chat_win.yview, cursor="heart")
         # self.chat_win['yscrollcommand'] = self.scrollbar.set
 
-    def setting_form(self):
+    def profile_form(self):
         """Settings"""
 
         master = Toplevel()
@@ -220,8 +216,6 @@ class Application(Frame):
         # master.geometry("250x200")
         master.resizable(0, 0)
         master.minsize(width=200, height=30)
-
-        users_list = "\n".join(Session.get_users_list().split(","))
 
         title_frame = Frame(master, bg="#54b2ff", height=20)
         title_frame.pack(side=TOP, fill=X)
@@ -240,24 +234,69 @@ class Application(Frame):
         sett_frame = Frame(master)
         sett_frame.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
 
+        id_lbl = Label(sett_frame, text="User ID: ")
+        id_lbl.grid(row=0, column=0, sticky=E)
         name_lbl = Label(sett_frame, text="User name: ")
-        name_lbl.grid(row=0, column=0, sticky=E)
+        name_lbl.grid(row=1, column=0, sticky=E)
         f_name_lbl = Label(sett_frame, text="First name: ")
-        f_name_lbl.grid(row=1, column=0, sticky=E)
+        f_name_lbl.grid(row=2, column=0, sticky=E)
         l_name_lbl = Label(sett_frame, text="Last name: ")
-        l_name_lbl.grid(row=2, column=0, sticky=E)
+        l_name_lbl.grid(row=3, column=0, sticky=E)
         admin_lbl = Label(sett_frame, text="Admin: ")
-        admin_lbl.grid(row=3, column=0, sticky=E)
+        admin_lbl.grid(row=4, column=0, sticky=E)
 
+        user_id_info = Label(sett_frame, text=self.user.id, font=("Arial", 10, "bold"))
+        user_id_info.grid(row=0, column=1, sticky=W)
         user_name_info = Label(sett_frame, text=self.user.user_name.capitalize(), font=("Arial", 10, "bold"))
-        user_name_info.grid(row=0, column=1, sticky=W)
+        user_name_info.grid(row=1, column=1, sticky=W)
         f_name_info = Label(sett_frame, text=self.user.f_name.capitalize(), font=("Arial", 10, "bold"))
-        f_name_info.grid(row=1, column=1, sticky=W)
+        f_name_info.grid(row=2, column=1, sticky=W)
         l_name_info = Label(sett_frame, text=self.user.l_name.capitalize(), font=("Arial", 10, "bold"))
         print(repr(self.user.l_name))
-        l_name_info.grid(row=2, column=1, sticky=W)
+        l_name_info.grid(row=3, column=1, sticky=W)
         admin_info = Label(sett_frame, text=self.user.admin, font=("Arial", 10, "bold"))
-        admin_info.grid(row=3, column=1, sticky=W)
+        admin_info.grid(row=4, column=1, sticky=W)
+
+        edit_img = PhotoImage(file="img/active_users_small.png")
+        edit_btn = Button(title_frame, text="Edit", image=edit_img,
+                          bd=0, bg=self.standard_theme["BTN_BG"],
+                          activebackground=self.standard_theme["BTN_BG"])
+        edit_btn.bind("<Button-1>", lambda event: [self.edit_profile(master),
+                                                   sett_frame.destroy(),
+                                                   edit_btn.destroy()
+                                                   ])
+        edit_btn.image = edit_img
+        edit_btn.pack(side=RIGHT, padx=(20, 20), pady=10)
+
+    def edit_profile(self, master):
+        """Changes the profile form and let the user edit data"""
+
+        edit_frame = Frame(master)
+        edit_frame.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
+
+        f_name_lbl = Label(edit_frame, text="First name: ")
+        f_name_lbl.grid(row=0, column=0, sticky=E)
+        l_name_lbl = Label(edit_frame, text="Last name: ")
+        l_name_lbl.grid(row=1, column=0, sticky=E)
+        avatar_lbl = Label(edit_frame, text="Profile image: ")
+        avatar_lbl.grid(row=2, column=0, sticky=E)
+
+        f_name_info = Entry(edit_frame, font=("Arial", 10, "bold"))
+        f_name_info.grid(row=0, column=1, sticky=W)
+        f_name_info.insert(0, self.user.f_name)
+        l_name_info = Entry(edit_frame, font=("Arial", 10, "bold"))
+        l_name_info.grid(row=1, column=1, sticky=W)
+        l_name_info.insert(0, self.user.l_name)
+        avatar_req = Entry(edit_frame, font=("Arial", 10, "bold"), state=DISABLED)
+        avatar_req.grid(row=2, column=1, sticky=W)
+
+        submit_btn = Button(edit_frame, text="Submit changes",
+                            command=lambda: [
+                                self.user.update(f_name=f_name_info.get(), l_name=l_name_info.get()),
+                                master.destroy(),
+                                self.profile_form()
+                            ])
+        submit_btn.grid(row=3, columnspan=2, sticky=E, pady=(5, 0))
 
     @staticmethod
     def active_users_form():
