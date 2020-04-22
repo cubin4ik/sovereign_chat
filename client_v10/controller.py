@@ -66,10 +66,13 @@ class User:
                    l_name=data[5].rstrip(),
                    user_id=data[0])
 
-    def update(self, f_name=None, l_name=None):
+    def update(self, f_name=None, l_name=None, avatar_path=None):
         """Updates user data"""
 
         DataHandling.update_database(self.user_name, f_name, l_name)
+
+        if avatar_path is not None:
+            DataHandling.update_avatar(user=self.user_name, avatar_path=avatar_path)
 
 
 class Admin(User):
@@ -99,6 +102,30 @@ class DataHandling:
         try:
             client = Connection()
             status = client.request_server(f"UPDATE_ME|{user};{f_name};{l_name}")
+
+            if status == "False":
+                messagebox.showerror("SNet", "Could not update")
+            else:
+                messagebox.showinfo("SNet", "Profile updated")
+        except ConnectionError:
+            messagebox.showerror("SNet", "Server is not responding")
+        except TimeoutError:
+            messagebox.showerror("SNet", "Server dropped")
+
+    @staticmethod
+    def update_avatar(user, avatar_path):
+        """Sends image to  server"""
+
+        with open(avatar_path, "rb") as rf:
+            avatar = rf.read()
+        print("AVATAR IMAGE: ", avatar)
+
+        try:
+            client = Connection()
+            status = client.request_server(f"AVATAR_ME|{user}", close="KEEP_ALIVE")
+
+            if status == "SEND_IMG":
+                status = client.send_img(avatar)
 
             if status == "False":
                 messagebox.showerror("SNet", "Could not update")

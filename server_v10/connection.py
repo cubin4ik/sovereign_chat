@@ -15,6 +15,7 @@ class Connection:
     IP = socket.gethostname()
     PORT = 8000
     BUFF_SIZE = 2 ** 7
+    BUFF_SIZE_IMG = 2 ** 15
     HEADER_SIZE = 10
     QUEUE = 5
 
@@ -88,6 +89,14 @@ class Connection:
                 elif header == "UPDATE_ME":
                     user_name, f_name, l_name = body.split(";")
                     result = DataHandling.update_database(user_name, f_name, l_name)  # TODO: Finish the response
+                    client_socket.send(self.format_msg(str(result)))
+                elif header == "AVATAR_ME":
+                    user = body
+                    reply = "SEND_IMG"
+                    client_socket.send(self.format_msg(str(reply)))
+                    img = self.receive_img(client_socket)
+                    print("RECEIVED IMAGE: ", img)
+                    result = DataHandling.save_img(user, img)
                     client_socket.send(self.format_msg(str(result)))
                 elif header == "GETLASTID":
                     resp = DataHandling.get_last_id()
@@ -175,6 +184,14 @@ class Connection:
 
             if len(req_full[Connection.HEADER_SIZE:]) == msg_len:
                 return req_full[Connection.HEADER_SIZE:]
+
+    @staticmethod
+    def receive_img(remote_socket):
+        """Receiving any long image"""
+
+        # TODO: get fixed length and loop
+        img = remote_socket.recv(Connection.BUFF_SIZE_IMG)
+        return img
 
     def send_req(self, msg):
         """Returns response from server to request (with header)"""

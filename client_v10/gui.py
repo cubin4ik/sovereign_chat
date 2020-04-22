@@ -2,8 +2,9 @@
 
 # standard libraries
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 import threading
+import os
 
 # local files
 from client_v10.controller import User, Session, Chat
@@ -107,6 +108,8 @@ class Application(Frame):
         """Application's main window"""
 
         self.user = User.from_key()
+        self.avatar_path = None  # Avatar path is chosen by user in "Edit profile" by get_img() function
+
         self.master.title("SNet Chat")
         self.master.geometry("300x400")
         self.master.minsize(width=300, height=200)
@@ -288,12 +291,12 @@ class Application(Frame):
         l_name_info = Entry(edit_frame, font=("Arial", 10, "bold"))
         l_name_info.grid(row=1, column=1, sticky=W)
         l_name_info.insert(0, self.user.l_name)
-        avatar_req = Entry(edit_frame, font=("Arial", 10, "bold"), state=DISABLED)
+        avatar_req = Button(edit_frame, text="Select image", command=lambda: self.get_img())
         avatar_req.grid(row=2, column=1, sticky=W)
 
         submit_btn = Button(edit_frame, text="Submit changes",
                             command=lambda: [
-                                self.user.update(f_name=f_name_info.get(), l_name=l_name_info.get()),
+                                self.user.update(f_name=f_name_info.get(), l_name=l_name_info.get(), avatar_path=self.avatar_path),
                                 master.destroy(),
                                 self.profile_form()
                             ])
@@ -345,6 +348,16 @@ class Application(Frame):
 
         self.entry_box.config(state=NORMAL)
         self.send_click()
+
+    def get_img(self):
+        """Suggests a user to select an image and stores it in a variable"""
+
+        self.avatar_path = filedialog.askopenfilename(initialdir="/", title="Select file",
+                                                      filetypes=(("PNG files", "*.png"), ("All files", "*.*")))
+
+        if os.stat(self.avatar_path).st_size > 2 ** 15:
+            self.avatar_path = None
+            messagebox.showerror("SNet", "Image size should be less the 32 KB")
 
 
 root = Tk()

@@ -43,7 +43,7 @@ class Connection:
             if len(req_full[Connection.HEADER_SIZE:]) == msg_len:
                 return req_full[Connection.HEADER_SIZE:]
 
-    def request_server(self, msg):
+    def request_server(self, msg, close=None):
         """Returns response from server to request (with header)"""
 
         msg = f"{len(msg):<{Connection.HEADER_SIZE}}" + msg
@@ -52,9 +52,13 @@ class Connection:
             self.host_socket.send(msg.encode("utf-8"))
             resp = self.receive_msg()
 
-            self.close_connection(self.host_socket)
-
-            return resp
+            if close == "KEEP_ALIVE":
+                print("SOCKET IS ALIVE")
+                return resp
+            else:
+                self.close_connection(self.host_socket)
+                print("REQUEST SOCKET CLOSED. RESPONSE: ", resp)
+                return resp
 
         except ConnectionResetError:
             print("Connection failed")
@@ -67,6 +71,22 @@ class Connection:
         try:
             self.host_socket.send(msg.encode("utf-8"))
             print("Message broadcasted: ", msg)
+        except ConnectionResetError:
+            print("Connection failed")
+
+    def send_img(self, img):
+        """Sends images to server"""
+
+        msg = img
+
+        try:
+            self.host_socket.send(msg)
+            resp = self.receive_msg()
+
+            self.close_connection(self.host_socket)
+
+            return resp
+
         except ConnectionResetError:
             print("Connection failed")
 

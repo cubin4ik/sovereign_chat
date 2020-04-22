@@ -12,7 +12,8 @@ import time
 
 file_paths = {
     "users": "data/users.txt",
-    "keys": "data/keys.txt"
+    "keys": "data/keys.txt",
+    "avatars": "img/avatars"
 }
 
 
@@ -97,6 +98,21 @@ class DataHandling:
                     wf.write(line)
 
         os.remove("data/users_tmp.txt")
+
+    @staticmethod
+    def save_img(user, img):
+        """Saves given image to database folder img/avatars"""
+
+        if not os.path.exists(file_paths["avatars"]):
+            os.makedirs(file_paths["avatars"])
+
+        file_name = user + ".png"
+        avatar_path = os.path.join(file_paths["avatars"], file_name)
+
+        with open(avatar_path, "wb") as wf:
+            wf.write(img)
+
+        return True
 
     @staticmethod
     def user_exists(user_name):
