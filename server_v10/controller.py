@@ -9,11 +9,17 @@ by Alejandro Suarez
 import os
 import random
 import time
+from PIL import Image, ImageDraw
 
 file_paths = {
     "users": "data/users.txt",
     "keys": "data/keys.txt",
-    "avatars": "img/avatars"
+    "avatars": "img/avatars",
+    "thumbnails": "img/avatars/thumb"
+}
+
+img_size = {
+    "thumbnail": (30, 30)
 }
 
 
@@ -111,6 +117,15 @@ class DataHandling:
 
         with open(avatar_path, "wb") as wf:
             wf.write(img)
+
+        if not os.path.exists(file_paths["thumbnails"]):
+            os.makedirs(file_paths["thumbnails"])
+
+        thumb_path = os.path.join(file_paths["thumbnails"], file_name)
+        pil_img = Image.open(avatar_path)
+        pil_img.thumbnail(img_size["thumbnail"])
+        pil_img_round_corner = ImageProcessor.add_corners(pil_img, 15)
+        pil_img_round_corner.save(thumb_path)
 
         return True
 
@@ -231,4 +246,22 @@ class Session:
                 # TODO: Find how to remove a specific line in a file
                 if key_line == key:
                     pass
+
+
+class ImageProcessor:
+    """Processes images"""
+
+    @staticmethod
+    def add_corners(im, rad):
+        circle = Image.new('L', (rad * 2, rad * 2), 0)
+        draw = ImageDraw.Draw(circle)
+        draw.ellipse((0, 0, rad * 2, rad * 2), fill=255)
+        alpha = Image.new('L', im.size, 255)
+        w, h = im.size
+        alpha.paste(circle.crop((0, 0, rad, rad)), (0, 0))
+        alpha.paste(circle.crop((0, rad, rad, rad * 2)), (0, h - rad))
+        alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
+        alpha.paste(circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad))
+        im.putalpha(alpha)
+        return im
 
