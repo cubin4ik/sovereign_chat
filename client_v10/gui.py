@@ -211,6 +211,7 @@ class Application(Frame):
     def profile_form(self):
         """Settings"""
 
+        self.user = User.from_key()
         master = Toplevel()
         master.title("SNet Active users")
         # master.geometry("250x200")
@@ -257,7 +258,7 @@ class Application(Frame):
         admin_info = Label(sett_frame, text=self.user.admin, font=("Arial", 10, "bold"))
         admin_info.grid(row=4, column=1, sticky=W)
 
-        edit_img = PhotoImage(file="img/active_users_small.png")
+        edit_img = PhotoImage(file="img/pencil_small.png")
         edit_btn = Button(title_frame, text="Edit", image=edit_img,
                           bd=0, bg=self.standard_theme["BTN_BG"],
                           activebackground=self.standard_theme["BTN_BG"])
