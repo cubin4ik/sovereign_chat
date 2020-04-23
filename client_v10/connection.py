@@ -9,7 +9,7 @@ class Connection:
     IP = socket.gethostname()
     PORT = 8000
     BUFF_SIZE = 2 ** 7
-    BUFF_SIZE_IMG = 2 ** 15
+    BUFF_SIZE_IMG = 2 ** 22
     HEADER_SIZE = 10
     QUEUE = 5
 

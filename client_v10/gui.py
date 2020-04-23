@@ -121,7 +121,7 @@ class Application(Frame):
             "BTN_FG": "#fcff9c",
             "ENT_BG": "WHITE",
             "GREY": "#c7c7c7",
-            "FONT": "Arial"
+            "FONT": ("Arial", 12)
         }
 
         # GUI
@@ -291,7 +291,9 @@ class Application(Frame):
         l_name_info = Entry(edit_frame, font=("Arial", 10))
         l_name_info.grid(row=1, column=1, sticky=W)
         l_name_info.insert(0, self.user.l_name.capitalize())
-        avatar_req = Button(edit_frame, text="Select image", command=lambda: self.get_img())
+        avatar_req = Button(edit_frame, text="Select image", command=lambda: [self.get_img(),
+                                                                              edit_frame.focus_set(),
+                                                                              avatar_req.config(text=os.path.split(self.avatar_path)[1])])
         avatar_req.grid(row=2, column=1, sticky=W)
 
         submit_btn = Button(edit_frame, text="Submit changes",
@@ -355,7 +357,7 @@ class Application(Frame):
         self.avatar_path = filedialog.askopenfilename(initialdir="/", title="Select file",
                                                       filetypes=(("PNG files", "*.png"), ("All files", "*.*")))
 
-        if os.stat(self.avatar_path).st_size > 2 ** 15:
+        if os.stat(self.avatar_path).st_size > 2 ** 22:
             self.avatar_path = None
             messagebox.showerror("SNet", "Image size should be less the 32 KB")
 

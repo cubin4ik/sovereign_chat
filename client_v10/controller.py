@@ -136,7 +136,7 @@ class DataHandling:
             if status == "False":
                 messagebox.showerror("SNet", "Could not update")
             else:
-                messagebox.showinfo("SNet", "Profile updated")
+                messagebox.showinfo("SNet", "Avatar updated")
         except ConnectionError:
             messagebox.showerror("SNet", "Server is not responding")
         except TimeoutError:
@@ -412,13 +412,17 @@ class Chat:
             self.widget.config(state=NORMAL)
             if self.widget.index('end') is not None:
 
-                line_num = float(self.widget.index('end')) - 1.0  # TODO: for reasons unknown it was in try/wxcept block
+                line_num = float(self.widget.index('end')) - 1.0  # TODO: for reasons unknown it was in try/except block
 
-                self.widget.insert(END, f"{user_name}: {entry_text}")
+                # img = PhotoImage(file="img/button_exit.png")
+                # self.widget.image_create(END, image=img)
+                # self.widget.image = img
+
+                self.widget.insert(END, f"{user_name} {entry_text}")
                 print("SHOW: ", f"{user_name}: {entry_text}")
                 self.widget.tag_add(user_name, line_num, line_num + float("0." + str(len(user_name))))
                 print(line_num)
-                self.widget.tag_config(user_name, foreground=colors.get(user_name, "#e8b164"), font=("Arial", 12, "bold"))
+                self.widget.tag_config(user_name, foreground=colors.get(user_name, "#e8b164"), font=("Arial", 10, "bold"))
                 self.widget.config(state=DISABLED)
                 self.widget.yview(END)
 
