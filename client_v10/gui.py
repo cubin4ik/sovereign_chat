@@ -46,19 +46,24 @@ class Application(Frame):
 
         self.user_name_entry = Entry(self.auth_frame)
         self.user_name_entry.grid(row=0, column=1)
-        self.user_name_entry.bind("<Return>", lambda event: [self.auth_frame.destroy(), self.main_form()] if Session.check_credentials(self.user_name_entry.get(),
-                                                                                                                                                  self.user_pass_entry.get()) else None)
+        self.user_name_entry.bind("<Return>", lambda event: [self.auth_frame.destroy(),
+                                                             self.main_form()] if Session.check_credentials(
+            self.user_name_entry.get(),
+            self.user_pass_entry.get()) else None)
         self.user_pass_entry = Entry(self.auth_frame, show="*")
         self.user_pass_entry.grid(row=1, column=1)
-        self.user_pass_entry.bind("<Return>", lambda event: [self.auth_frame.destroy(), self.main_form()] if Session.check_credentials(self.user_name_entry.get(),
-                                                                                                                                                  self.user_pass_entry.get()) else None)
+        self.user_pass_entry.bind("<Return>", lambda event: [self.auth_frame.destroy(),
+                                                             self.main_form()] if Session.check_credentials(
+            self.user_name_entry.get(),
+            self.user_pass_entry.get()) else None)
 
     def log_form(self):
         """Adds login functionality to authorization form"""
 
         login_btn = Button(self.auth_frame, text="Login",
-                           command=lambda: [self.auth_frame.destroy(), self.main_form()] if Session.check_credentials(self.user_name_entry.get(),
-                                                                                                                      self.user_pass_entry.get()) else None)
+                           command=lambda: [self.auth_frame.destroy(), self.main_form()] if Session.check_credentials(
+                               self.user_name_entry.get(),
+                               self.user_pass_entry.get()) else None)
 
         login_btn.grid(row=2, column=1, sticky=E)
 
@@ -90,18 +95,24 @@ class Application(Frame):
         user_name_entry = Entry(reg_frame)
         user_name_entry.grid(row=0, column=1)
         user_name_entry.bind("<Return>", lambda event: [master.destroy(),
-                                                                   messagebox.showinfo("SNet", "User added")] if Session.new_user_reg(user_name_entry.get(),
-                                                                                                                                      user_pass_entry.get()) else None)
+                                                        messagebox.showinfo("SNet",
+                                                                            "User added")] if Session.new_user_reg(
+            user_name_entry.get(),
+            user_pass_entry.get()) else None)
         user_pass_entry = Entry(reg_frame, show="*")
         user_pass_entry.grid(row=1, column=1)
         user_pass_entry.bind("<Return>", lambda event: [master.destroy(),
-                                                                   messagebox.showinfo("SNet", "User added")] if Session.new_user_reg(user_name_entry.get(),
-                                                                                                                                      user_pass_entry.get()) else None)
+                                                        messagebox.showinfo("SNet",
+                                                                            "User added")] if Session.new_user_reg(
+            user_name_entry.get(),
+            user_pass_entry.get()) else None)
 
         register_btn = Button(reg_frame, text="Register")
         register_btn.bind("<Button-1>", lambda event: [master.destroy(),
-                                                       messagebox.showinfo("SNet", "User added")] if Session.new_user_reg(user_name_entry.get(),
-                                                                                                                          user_pass_entry.get()) else None)
+                                                       messagebox.showinfo("SNet",
+                                                                           "User added")] if Session.new_user_reg(
+            user_name_entry.get(),
+            user_pass_entry.get()) else None)
         register_btn.grid(row=2, column=1, sticky=E)
 
     def main_form(self):
@@ -138,17 +149,21 @@ class Application(Frame):
         # background_label.image = background_image
         # background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        avatar_pic = PhotoImage(data=self.user.avatar())
-        avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
-                        activebackground=self.standard_theme["BTN_BG"],
-                        command=lambda: self.profile_form())
-        avatar.image = avatar_pic
-        avatar.pack(side=LEFT, padx=(20, 0), pady=10)
+        self.info_frame = Frame(title_frame, bg=self.standard_theme["TOP_BAR"])
+        self.info_frame.pack(side=LEFT, padx=0, pady=0)
+        self.info_widget(self.info_frame)
 
-        name_lbl = Label(title_frame, text=self.user.user_name.capitalize(),
-                    bd=0, bg=self.standard_theme["TOP_BAR"],
-                    font=(self.standard_theme["FONT"], 10, "bold"))
-        name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
+        # avatar_pic = PhotoImage(data=self.user.avatar())
+        # avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
+        #                 activebackground=self.standard_theme["BTN_BG"],
+        #                 command=lambda: self.profile_form())
+        # avatar.image = avatar_pic
+        # avatar.pack(side=LEFT, padx=(20, 0), pady=10)
+        #
+        # name_lbl = Label(title_frame, text=self.user.user_name.capitalize(),
+        #             bd=0, bg=self.standard_theme["TOP_BAR"],
+        #             font=(self.standard_theme["FONT"], 10, "bold"))
+        # name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
         exit_img = PhotoImage(file="img/button_exit_small.png")
         exit_btn = Button(title_frame, text="log out", image=exit_img,
@@ -210,6 +225,24 @@ class Application(Frame):
         # Bind a scrollbar to the Chat window
         # self.scrollbar = Scrollbar(chat_frame, command=self.chat_win.yview, cursor="heart")
         # self.chat_win['yscrollcommand'] = self.scrollbar.set
+
+    def info_widget(self, master):
+        """Creates info in title frame"""
+
+        self.tmp_frame = Frame(master, bg=self.standard_theme["TOP_BAR"])
+        self.tmp_frame.pack(side=LEFT, padx=0, pady=0)
+
+        avatar_pic = PhotoImage(data=self.user.avatar())
+        avatar = Button(self.tmp_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
+                        activebackground=self.standard_theme["BTN_BG"],
+                        command=lambda: self.profile_form())
+        avatar.image = avatar_pic
+        avatar.pack(side=LEFT, padx=(20, 0), pady=10)
+
+        name_lbl = Label(self.tmp_frame, text=self.user.user_name.capitalize(),
+                         bd=0, bg=self.standard_theme["TOP_BAR"],
+                         font=(self.standard_theme["FONT"], 10, "bold"))
+        name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
     def profile_form(self):
         """Settings"""
@@ -293,13 +326,18 @@ class Application(Frame):
         l_name_info.insert(0, self.user.l_name.capitalize())
         avatar_req = Button(edit_frame, text="Select image", command=lambda: [self.get_img(),
                                                                               edit_frame.focus_set(),
-                                                                              avatar_req.config(text=os.path.split(self.avatar_path)[1])])
+                                                                              avatar_req.config(
+                                                                                  text=os.path.split(self.avatar_path)[
+                                                                                      1])])
         avatar_req.grid(row=2, column=1, sticky=W)
 
         submit_btn = Button(edit_frame, text="Submit changes",
                             command=lambda: [
-                                self.user.update(f_name=f_name_info.get(), l_name=l_name_info.get(), avatar_path=self.avatar_path),
+                                self.user.update(f_name=f_name_info.get(), l_name=l_name_info.get(),
+                                                 avatar_path=self.avatar_path),
                                 master.destroy(),
+                                self.tmp_frame.destroy(),
+                                self.info_widget(self.info_frame),
                                 self.profile_form()
                             ])
         submit_btn.grid(row=3, columnspan=2, sticky=E, pady=(5, 0))
@@ -359,7 +397,7 @@ class Application(Frame):
 
         if os.stat(self.avatar_path).st_size > 2 ** 22:
             self.avatar_path = None
-            messagebox.showerror("SNet", "Image size should be less the 32 KB")
+            messagebox.showerror("SNet", "Image size should be less the 4 MB")
 
 
 root = Tk()
