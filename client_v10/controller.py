@@ -74,6 +74,12 @@ class User:
         if avatar_path is not None:
             DataHandling.update_avatar(user=self.user_name, avatar_path=avatar_path)
 
+    def avatar(self):
+        """Returns profile image from server"""
+
+        avatar = DataHandling.get_avatar(self.user_name)
+        return avatar
+
 
 class Admin(User):
     """Admin account of a user"""
@@ -135,6 +141,28 @@ class DataHandling:
             messagebox.showerror("SNet", "Server is not responding")
         except TimeoutError:
             messagebox.showerror("SNet", "Server dropped")
+
+    @staticmethod
+    def get_avatar(user):
+        """Requests user profile image to server"""
+
+        with open("img/avatar_blank_small.png", "rb") as rf:
+            img = rf.read()
+
+        try:
+            client = Connection()
+            resp = client.request_server(f"GETAVATAR|{user}", close="KEEP_ALIVE")
+            if resp == "SENDING_IMG":
+                img = client.receive_img()
+                client.close_connection()
+            elif resp == "NOT_FOUND":
+                print("User haven't uploaded his photo yet")
+        except ConnectionError:
+            messagebox.showerror("SNet", "Server is not responding")
+        except TimeoutError:
+            messagebox.showerror("SNet", "Server dropped")
+
+        return img
 
     @staticmethod
     def user_exists(user_name):

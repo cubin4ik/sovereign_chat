@@ -9,6 +9,7 @@ class Connection:
     IP = socket.gethostname()
     PORT = 8000
     BUFF_SIZE = 2 ** 7
+    BUFF_SIZE_IMG = 2 ** 15
     HEADER_SIZE = 10
     QUEUE = 5
 
@@ -56,7 +57,7 @@ class Connection:
                 print("SOCKET IS ALIVE")
                 return resp
             else:
-                self.close_connection(self.host_socket)
+                self.close_connection()
                 print("REQUEST SOCKET CLOSED. RESPONSE: ", resp)
                 return resp
 
@@ -83,16 +84,22 @@ class Connection:
             self.host_socket.send(msg)
             resp = self.receive_msg()
 
-            self.close_connection(self.host_socket)
+            self.close_connection()
 
             return resp
 
         except ConnectionResetError:
             print("Connection failed")
 
-    @staticmethod
-    def close_connection(sock):
+    def receive_img(self):
+        """Receiving any long image"""
+
+        # TODO: get fixed length and loop
+        img = self.host_socket.recv(Connection.BUFF_SIZE_IMG)
+        return img
+
+    def close_connection(self):
         """Closes given sockets"""
 
-        sock.shutdown(socket.SHUT_RDWR)  # TODO: Replace with "with" statement (on server side too)
-        sock.close()
+        self.host_socket.shutdown(socket.SHUT_RDWR)  # TODO: Replace with "with" statement (on server side too)
+        self.host_socket.close()

@@ -63,7 +63,7 @@ class Connection:
                 print(f"Connection closed by remote socket: {client_socket.getpeername()}")
             else:
                 header, body = req.split("|")
-
+                # TODO: all sending operations should consider try/except method in case client closes connection
                 if header == "CHECK_KEY":
                     print(f"KEY RECEIVED: {body}")
                     resp = Session.check_key(body)
@@ -98,6 +98,16 @@ class Connection:
                     print("RECEIVED IMAGE: ", img)
                     result = DataHandling.save_img(user, img)
                     client_socket.send(self.format_msg(str(result)))
+                elif header == "GETAVATAR":
+                    user = body
+                    img = DataHandling.get_avatar(user)
+                    if img:
+                        reply = "SENDING_IMG"
+                        client_socket.send(self.format_msg(str(reply)))
+                        client_socket.send(img)
+                    else:
+                        reply = "NOT_FOUND"
+                        client_socket.send(self.format_msg(str(reply)))
                 elif header == "GETLASTID":
                     resp = DataHandling.get_last_id()
                     client_socket.send(self.format_msg(resp))

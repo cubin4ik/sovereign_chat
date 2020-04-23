@@ -130,6 +130,22 @@ class DataHandling:
         return True
 
     @staticmethod
+    def get_avatar(user):
+        """Returns avatar picture from database"""
+
+        file_name = user + ".png"
+        avatar_path = os.path.join(file_paths["thumbnails"], file_name)
+
+        if os.path.exists(avatar_path):
+            with open(avatar_path, "rb") as rf:
+                print("AVATAR FOUND FOR: ", user)
+                img = rf.read()
+                return img
+        else:
+            print("AVATAR NOT FOUND: ", user)
+            return False
+
+    @staticmethod
     def user_exists(user_name):
         """If user exists returns True"""
 

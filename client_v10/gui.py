@@ -112,7 +112,7 @@ class Application(Frame):
 
         self.master.title("SNet Chat")
         self.master.geometry("300x400")
-        self.master.minsize(width=300, height=200)
+        self.master.minsize(width=310, height=200)
         # self.master.resizable(width=FALSE, height=FALSE)
 
         self.standard_theme = {
@@ -138,7 +138,7 @@ class Application(Frame):
         # background_label.image = background_image
         # background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        avatar_pic = PhotoImage(file=r"img/avatar_blank_small.png")
+        avatar_pic = PhotoImage(data=self.user.avatar())
         avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
                         activebackground=self.standard_theme["BTN_BG"],
                         command=lambda: self.profile_form())
@@ -285,12 +285,12 @@ class Application(Frame):
         avatar_lbl = Label(edit_frame, text="Profile image: ")
         avatar_lbl.grid(row=2, column=0, sticky=E)
 
-        f_name_info = Entry(edit_frame, font=("Arial", 10, "bold"))
+        f_name_info = Entry(edit_frame, font=("Arial", 10))
         f_name_info.grid(row=0, column=1, sticky=W)
-        f_name_info.insert(0, self.user.f_name)
-        l_name_info = Entry(edit_frame, font=("Arial", 10, "bold"))
+        f_name_info.insert(0, self.user.f_name.capitalize())
+        l_name_info = Entry(edit_frame, font=("Arial", 10))
         l_name_info.grid(row=1, column=1, sticky=W)
-        l_name_info.insert(0, self.user.l_name)
+        l_name_info.insert(0, self.user.l_name.capitalize())
         avatar_req = Button(edit_frame, text="Select image", command=lambda: self.get_img())
         avatar_req.grid(row=2, column=1, sticky=W)
 
