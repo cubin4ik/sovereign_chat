@@ -69,7 +69,9 @@ class User:
     def update(self, f_name=None, l_name=None, avatar_path=None):
         """Updates user data"""
 
-        DataHandling.update_database(self.user_name, f_name, l_name)
+        self.f_name = f_name
+        self.l_name = l_name
+        DataHandling.update_database(self.user_name, self.f_name, self.l_name)
 
         if avatar_path is not None:
             DataHandling.update_avatar(user=self.user_name, avatar_path=avatar_path)

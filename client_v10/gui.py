@@ -247,7 +247,7 @@ class Application(Frame):
     def profile_form(self):
         """Settings"""
 
-        self.user = User.from_key()
+        # self.user = User.from_key()
         master = Toplevel()
         master.title("SNet Active users")
         # master.geometry("250x200")
