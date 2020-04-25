@@ -1,4 +1,13 @@
-"""USER DATABASE: social-database"""
+"""SNet group chat with centralized server"""
+
+# Features:
+# - Authentication system with registration option
+# - Session system based on simple key generated on server side
+# - User may stay logged in and launch chat automatically by local key
+# - User data is stored on server side only
+# - User can change his data any time
+# - Thumbnail for user image (avatar) is processed on server side
+# - Online users list for every user
 
 # standard libraries
 from tkinter import *
@@ -400,4 +409,8 @@ root = Tk()
 # root.overrideredirect(True)
 app = Application(master=root)
 app.mainloop()
-app.chat_controller.stop_refresh()
+
+try:
+    app.chat_controller.stop_refresh()
+except AttributeError:
+    pass

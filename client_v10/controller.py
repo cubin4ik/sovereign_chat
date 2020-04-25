@@ -282,6 +282,9 @@ class Session:
     def put_key(self):
         """Puts key to keys holder"""
 
+        if not os.path.exists("data"):
+            os.mkdir("data")
+
         with open(file_paths["key"], "w") as wf:
             wf.write(self.key)
 
@@ -417,7 +420,7 @@ class Chat:
 
                 line_num = float(self.widget.index('end')) - 1.0  # TODO: for reasons unknown it was in try/except block
 
-                # img = PhotoImage(file="img/button_exit.png")
+                # img = PhotoImage(file="img/utton_exit.png")
                 # self.widget.image_create(END, image=img)
                 # self.widget.image = img
 
