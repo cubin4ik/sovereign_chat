@@ -126,7 +126,7 @@ class Connection:
                     user_name = body
                     Connection.active_users[user_name] = client_socket
 
-                    info_msg = f"SENDALLMSG|event|{user_name} has joined the chat\n"
+                    info_msg = f"SENDALLMSG|event|{user_name} joined\n"
                     self.broadcast(info_msg=info_msg)
 
                     try:
@@ -147,7 +147,7 @@ class Connection:
 
                         closed_socket = Connection.active_users.pop(body)
                         print("USER LEFT: ", closed_socket)
-                        info_msg = f"SENDALLMSG|event|{user_name} left the chat\n"
+                        info_msg = f"SENDALLMSG|event|{user_name} left\n"
 
                     except ConnectionRefusedError:
                         closed_socket = Connection.active_users.pop(body)

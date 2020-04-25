@@ -71,6 +71,7 @@ class User:
 
         self.f_name = f_name
         self.l_name = l_name
+
         DataHandling.update_database(self.user_name, self.f_name, self.l_name)
 
         if avatar_path is not None:
