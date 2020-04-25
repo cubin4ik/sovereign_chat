@@ -203,9 +203,8 @@ fabric.properties
 # SNet
 /client_v10/data/*
 /server_v10/data/*
+workbench/
 
 # SNet .idea/
 .idea/misc.xml
 .idea/social-network.iml
-
-# /workbench
