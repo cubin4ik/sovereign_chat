@@ -12,8 +12,12 @@ from server_v10.controller import DataHandling
 class Connection:
     """Handles all the connections using sockets"""
 
-    IP = socket.gethostname()
-    PORT = 8000
+    with open("config.txt", "r") as rf:
+        server_ip = rf.readline().strip()
+        server_port = int(rf.readline().strip())
+
+    IP = server_ip
+    PORT = server_port
     BUFF_SIZE = 2 ** 7
     BUFF_SIZE_IMG = 2 ** 22
     HEADER_SIZE = 10
@@ -25,7 +29,6 @@ class Connection:
         """Creates an endpoint using TCP/IP"""
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.host_socket:
-            # self.host_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             # Checks an endpoint type (server or client)
             if socket_type is None or socket_type == "client":
@@ -44,6 +47,7 @@ class Connection:
                     # with remote_socket:
                     serving_thread = threading.Thread(target=self.serv_client, args=[remote_socket])
                     serving_thread.start()
+
                     # TODO: Establishing messages headers below for protocol
                     # remote_socket.send(f"{Connection.HEADER_SIZE}".encode("utf-8"))
                     # thread = threading.Thread(target=self.serv_client, args=[remote_socket])

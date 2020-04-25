@@ -33,7 +33,7 @@ class Application(Frame):
 
         self.master.title("SNet Authorization")
         self.master.geometry("250x200")
-        # self.root.resizable(0, 0)
+        self.master.resizable(0, 0)
         self.master.minsize(width=250, height=200)
 
         self.auth_frame = Frame(self.master)
@@ -81,7 +81,7 @@ class Application(Frame):
         master = Toplevel()
         master.title("SNet Registration")
         master.geometry("250x200")
-        # self.root.resizable(0, 0)
+        master.resizable(0, 0)
         master.minsize(width=250, height=200)
 
         reg_frame = Frame(master)
@@ -124,7 +124,7 @@ class Application(Frame):
         self.master.title("SNet Chat")
         self.master.geometry("300x400")
         self.master.minsize(width=310, height=200)
-        # self.master.resizable(width=FALSE, height=FALSE)
+        self.master.resizable(1, 1)
 
         self.standard_theme = {
             "TOP_BAR": "#54b2ff",
@@ -247,7 +247,6 @@ class Application(Frame):
     def profile_form(self):
         """Settings"""
 
-        # self.user = User.from_key()
         master = Toplevel()
         master.title("SNet Active users")
         # master.geometry("250x200")
@@ -264,9 +263,6 @@ class Application(Frame):
 
         decor_frame = Frame(master, bg="#54b2ff", width=5)
         decor_frame.pack(side=LEFT, anchor=W, fill=Y, padx=(15, 0), pady=(0, 10))
-
-        # user_list_lbl = Label(master, text=users_list, font=("Arial", 10), justify=LEFT)
-        # user_list_lbl.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))
 
         sett_frame = Frame(master)
         sett_frame.pack(side=LEFT, anchor=NW, padx=10, pady=(5, 5))

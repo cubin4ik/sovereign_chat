@@ -6,8 +6,12 @@ import socket
 class Connection:
     """Handles all the connections using sockets"""
 
-    IP = socket.gethostname()
-    PORT = 8000
+    with open("config.txt", "r") as rf:
+        server_ip = rf.readline().strip()
+        server_port = int(rf.readline().strip())
+
+    IP = server_ip
+    PORT = server_port
     BUFF_SIZE = 2 ** 7
     BUFF_SIZE_IMG = 2 ** 22
     HEADER_SIZE = 10

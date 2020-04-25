@@ -102,7 +102,7 @@ class DataHandling:
         data = ";".join([str(user_id), str(admin), user_name, user_pass, f_name, l_name])
 
         client = Connection()
-        client.request_server(f"ADD_USERS|{data}")  # Any message should start with method by 9 characters
+        client.request_server(f"ADD_USERS|{data}")
 
     @staticmethod
     def update_database(user, f_name, l_name, avatar=None):
@@ -173,7 +173,7 @@ class DataHandling:
 
         try:
             client = Connection()
-            status = client.request_server(f"USEREXIST|{user_name}")  # Any message should start with method by 9 characters
+            status = client.request_server(f"USEREXIST|{user_name}")
 
             if status == "False":
                 return False
@@ -205,7 +205,7 @@ class DataHandling:
         try:
             client = Connection()
             status = client.request_server(
-                f"CHECKPASS|{user_name};{user_pass}")  # Any message should start with method by9 characters
+                f"CHECKPASS|{user_name};{user_pass}")
 
             if status == "False":
                 return False
@@ -314,7 +314,7 @@ class Session:
 
         try:
             client = Connection()
-            status = client.request_server(f"CHECK_KEY|{key}")  # Any message should start with method by 9 characters
+            status = client.request_server(f"CHECK_KEY|{key}")
             if status == "False":
                 return False
             else:
@@ -335,7 +335,7 @@ class Session:
 
         try:
             client = Connection()
-            client.request_server(f"DELETEKEY|{key}")  # Any message should start with method by 9 characters
+            client.request_server(f"DELETEKEY|{key}")
             os.remove(file_paths["key"])
         except ConnectionError:
             messagebox.showerror("SNet", "Connection lost")
