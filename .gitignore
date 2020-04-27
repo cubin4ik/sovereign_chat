@@ -203,7 +203,9 @@ fabric.properties
 # SNet
 /client_v10/data/*
 /server_v10/data/*
+/server_v10/img/*
 workbench/
+.idea/
 
 # SNet .idea/
 .idea/misc.xml
