@@ -63,6 +63,7 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["users"], "w").close()
 
         data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
 
@@ -80,6 +81,8 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open("data/users.txt", "w").close()
+            open("data/users_tmp.txt", "w").close()
 
         if os.path.exists("data/users_tmp.txt"):
             os.remove("data/users_tmp.txt")
@@ -158,6 +161,7 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["users"], "w").close()
 
         with open(file_paths["users"], "r") as read_database:
 
@@ -177,6 +181,7 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["users"], "w").close()
 
         with open(file_paths["users"], "r") as rf:
             if len(rf.read()) == 0:
@@ -190,6 +195,7 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["users"], "w").close()
 
         with open(file_paths["users"], "r") as rf:
             creds = rf.readline()
@@ -210,6 +216,8 @@ class DataHandling:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["keys"], "w").close()
+            open(file_paths["users"], "w").close()
 
         with open(file_paths["keys"], "r") as rf:
             line = rf.readline()
@@ -251,6 +259,7 @@ class Session:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["keys"], "w").close()
 
         with open(file_paths["keys"], "a") as wf:
             wf.write(self.key + "\n")
@@ -261,6 +270,7 @@ class Session:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["keys"], "w").close()
 
         if os.path.exists(file_paths["keys"]):
             with open(file_paths["keys"], "r") as rf:
@@ -279,6 +289,7 @@ class Session:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
+            open(file_paths["keys"], "w").close()
 
         with open(file_paths["keys"], "r") as wf:
 
