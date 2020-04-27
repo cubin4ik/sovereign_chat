@@ -16,7 +16,7 @@ import threading
 import os
 
 # local files
-from client_v10.controller import User, Session, Chat
+from client.controller import User, Session, Chat
 
 
 class Application(Frame):

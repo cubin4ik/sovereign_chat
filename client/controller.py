@@ -11,7 +11,7 @@ from tkinter import messagebox
 from tkinter import *
 
 # local files
-from client_v10.connection import Connection
+from client.connection import Connection
 
 file_paths = {
     "users": "data/users.txt",

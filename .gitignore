@@ -201,9 +201,9 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # SNet
-/client_v10/data/*
-/server_v10/data/*
-/server_v10/img/*
+/client/data/*
+/server/data/*
+/server/img/*
 workbench/
 .idea/
 

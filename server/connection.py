@@ -5,8 +5,8 @@ import socket
 import threading
 
 # local libraries
-from server_v10.controller import Session
-from server_v10.controller import DataHandling
+from server.controller import Session
+from server.controller import DataHandling
 
 
 class Connection:
