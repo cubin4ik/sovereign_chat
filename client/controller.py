@@ -11,6 +11,7 @@ from tkinter import messagebox
 from tkinter import *
 
 # local files
+# DELETE "client." as a reference (it is there to run both client and server from one project directory)
 from client.connection import Connection
 
 file_paths = {

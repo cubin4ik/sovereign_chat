@@ -15,7 +15,8 @@ from tkinter import messagebox, filedialog
 import threading
 import os
 
-# local files
+# local files:
+# DELETE "client." as a reference (it is there to run both client and server from one project directory)
 from client.controller import User, Session, Chat
 
 
