@@ -61,6 +61,7 @@ class DataHandling:
     @staticmethod
     def save_to_database(user_id, admin, user_name, user_pass, f_name, l_name):
 
+        # TODO: Create a method that prepares and creates all directories and files upfront the server starts
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
             open(file_paths["users"], "w").close()
