@@ -1,2 +1,2 @@
-192.168.88.239
-6543
+Type here server IP
+Type here server PORT
