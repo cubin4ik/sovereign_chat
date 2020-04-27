@@ -12,6 +12,7 @@ import time
 from PIL import Image, ImageDraw
 
 file_paths = {
+    "data": "data",
     "users": "data/users.txt",
     "keys": "data/keys.txt",
     "avatars": "img/avatars",
@@ -60,6 +61,9 @@ class DataHandling:
     @staticmethod
     def save_to_database(user_id, admin, user_name, user_pass, f_name, l_name):
 
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
+
         data = f"{user_id},{admin},{user_name},{user_pass},{f_name},{l_name}\n"
 
         with open(file_paths["users"], "a") as write_database:
@@ -73,6 +77,9 @@ class DataHandling:
             f_name = "None"
         if l_name == "":
             l_name = "None"
+
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
 
         if os.path.exists("data/users_tmp.txt"):
             os.remove("data/users_tmp.txt")
@@ -149,6 +156,9 @@ class DataHandling:
     def user_exists(user_name):
         """If user exists returns True"""
 
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
+
         with open(file_paths["users"], "r") as read_database:
 
             while True:
@@ -165,6 +175,9 @@ class DataHandling:
     def get_last_id():
         """Spits the last registered user if"""
 
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
+
         with open(file_paths["users"], "r") as rf:
             if len(rf.read()) == 0:
                 return str(0)
@@ -174,6 +187,9 @@ class DataHandling:
     @staticmethod
     def check_pass(user_name, user_pass):
         """Checks pair of name and password"""
+
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
 
         with open(file_paths["users"], "r") as rf:
             creds = rf.readline()
@@ -191,6 +207,9 @@ class DataHandling:
     @staticmethod
     def get_user_data(key):
         """Returns non sensitive data about user"""
+
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
 
         with open(file_paths["keys"], "r") as rf:
             line = rf.readline()
@@ -230,12 +249,18 @@ class Session:
     def put_key(self):
         """Puts key to keys holder"""
 
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
+
         with open(file_paths["keys"], "a") as wf:
             wf.write(self.key + "\n")
 
     @staticmethod
     def check_key(key):
         """Checks if user key is registered and logged in"""
+
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
 
         if os.path.exists(file_paths["keys"]):
             with open(file_paths["keys"], "r") as rf:
@@ -251,6 +276,9 @@ class Session:
     @staticmethod
     def terminate_session(key):
         """Deletes key of terminated session"""
+
+        if not os.path.exists(file_paths["data"]):
+            os.mkdir(file_paths["data"])
 
         with open(file_paths["keys"], "r") as wf:
 
