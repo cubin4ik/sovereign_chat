@@ -39,7 +39,6 @@ class User:
     def from_str(cls, name_str):
         """Creates an instance of a player using any string provided"""
 
-        # TODO: get rid off errors
         if name_str.count("-") == 2:
             f_name, l_name, rights_lvl = name_str.split("-")
             return cls(f_name, l_name, rights_lvl)

@@ -154,26 +154,9 @@ class Application(Frame):
         title_frame.pack(side=TOP, fill=X)
         # title_frame.pack_propagate(0)
 
-        # background_image = PhotoImage(file="img/wallpaper.png")
-        # background_label = Label(title_frame, image=background_image)
-        # background_label.image = background_image
-        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
-
         self.info_frame = Frame(title_frame, bg=self.standard_theme["TOP_BAR"])
         self.info_frame.pack(side=LEFT, padx=0, pady=0)
         self.info_widget(self.info_frame)
-
-        # avatar_pic = PhotoImage(data=self.user.avatar())
-        # avatar = Button(title_frame, text="set", image=avatar_pic, bd=0, bg=self.standard_theme["BTN_BG"],
-        #                 activebackground=self.standard_theme["BTN_BG"],
-        #                 command=lambda: self.profile_form())
-        # avatar.image = avatar_pic
-        # avatar.pack(side=LEFT, padx=(20, 0), pady=10)
-        #
-        # name_lbl = Label(title_frame, text=self.user.user_name.capitalize(),
-        #             bd=0, bg=self.standard_theme["TOP_BAR"],
-        #             font=(self.standard_theme["FONT"], 10, "bold"))
-        # name_lbl.pack(side=LEFT, padx=(30, 0), pady=10)
 
         exit_img = PhotoImage(file="img/button_exit_small.png")
         exit_btn = Button(title_frame, text="log out", image=exit_img,

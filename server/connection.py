@@ -33,7 +33,7 @@ class Connection:
 
             # Checks an endpoint type (server or client)
             if socket_type is None or socket_type == "client":
-                self.host_socket.connect((Connection.IP, Connection.PORT))  # TODO: Check if socket will be closed
+                self.host_socket.connect((Connection.IP, Connection.PORT))
             elif socket_type == "server":
                 self.host_socket.bind((Connection.IP, Connection.PORT))
                 self.host_socket.listen(Connection.QUEUE)
@@ -44,19 +44,11 @@ class Connection:
                     remote_socket, address = self.host_socket.accept()
                     print(f"connection: {address}")
 
-                    # TODO: Add threads and joining list (KILL THREADS PROPERLY)
-                    # with remote_socket:
                     serving_thread = threading.Thread(target=self.serv_client, args=[remote_socket])
                     serving_thread.start()
-
-                    # TODO: Establishing messages headers below for protocol
-                    # remote_socket.send(f"{Connection.HEADER_SIZE}".encode("utf-8"))
-                    # thread = threading.Thread(target=self.serv_client, args=[remote_socket])
-                    # thread.start()
             else:
                 raise ValueError("You need to specify connection type: \"server\" or \"client\"")
 
-    # TODO: Check if this method can be static
     def serv_client(self, client_socket):
         """A thread of serving one client"""
 
