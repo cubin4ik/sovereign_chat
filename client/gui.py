@@ -389,12 +389,17 @@ class Application(Frame):
             messagebox.showerror("SNet", "Image size should be less the 4 MB")
 
 
-root = Tk()
-# root.overrideredirect(True)
-app = Application(master=root)
-app.mainloop()
+def main():
+    root = Tk()
+    # root.overrideredirect(True)
+    app = Application(master=root)
+    app.mainloop()
 
-try:
-    app.chat_controller.stop_refresh()
-except AttributeError:
-    pass
+    try:
+        app.chat_controller.stop_refresh()
+    except AttributeError:
+        pass
+
+
+if __name__ == '__main__':
+    main()
