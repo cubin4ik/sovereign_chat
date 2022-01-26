@@ -1,4 +1,4 @@
-"""SNet group chat with centralized server"""
+"""Sovereign Chat is a group chat with centralized server"""
 
 # Features:
 # - Authentication system with registration option
