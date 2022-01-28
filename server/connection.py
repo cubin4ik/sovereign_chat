@@ -3,11 +3,14 @@
 # standard libraries
 import socket
 import threading
+import logging
 
 # local files
 # DELETE "server." as a reference (it is there to run both client and server from one project directory)
 from server.controller import Session
 from server.controller import DataHandling
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s (%(asctime)s)')
 
 
 class Connection:
@@ -37,12 +40,12 @@ class Connection:
             elif socket_type == "server":
                 self.host_socket.bind((Connection.IP, Connection.PORT))
                 self.host_socket.listen(Connection.QUEUE)
-                print(f"LISTENING ON: {self.IP}:{self.PORT}")
+                logging.info(f"LISTENING ON: {self.IP}:{self.PORT}")
 
                 while True:
-                    print("\nlistening..\n")
+                    logging.info("\nlistening..\n")
                     remote_socket, address = self.host_socket.accept()
-                    print(f"connection: {address}")
+                    logging.info(f"connection: {address}")
 
                     serving_thread = threading.Thread(target=self.serv_client, args=[remote_socket])
                     serving_thread.start()
