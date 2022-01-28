@@ -57,7 +57,7 @@ class Connection:
 
         with client_socket:
             req = self.receive(client_socket)
-            print("REQUEST TO: ", req)
+            logging.info("REQUEST TO: ", req)
 
             if not req:
                 print(f"Connection closed by remote socket: {client_socket.getpeername()}")
