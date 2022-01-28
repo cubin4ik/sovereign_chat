@@ -1,14 +1,12 @@
 """Server side based on socket connection"""
 
-# standard libraries
+# DELETE "server." as a reference (it is there to run both client and server from one project directory)
+from server.controller import Session
+from server.controller import DataHandling
 import socket
 import threading
 import logging
 
-# local files
-# DELETE "server." as a reference (it is there to run both client and server from one project directory)
-from server.controller import Session
-from server.controller import DataHandling
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s (%(asctime)s)')
 
