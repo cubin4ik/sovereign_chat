@@ -34,7 +34,7 @@ class Connection:
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.host_socket:
 
-            # Checks an endpoint type (server or client)
+            # Checks an endpoint type: server or client
             if socket_type is None or socket_type == "client":
                 self.host_socket.connect((Connection.IP, Connection.PORT))
             elif socket_type == "server":
