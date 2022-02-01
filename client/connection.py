@@ -1,17 +1,46 @@
 """Server side based on socket connection"""
 
+import os
 import socket
+
+
+def get_ip():
+    """Get IP/port from file first or set localhost"""
+
+    if os.path.isfile('config.txt'):
+        with open("config.txt", "r") as rf:
+            full_address = rf.read().split('\n')
+            if len(full_address) > 1:
+                ip = full_address[0].strip()
+                port = full_address[1].strip()
+                if validate_addr(ip, port):
+                    return ip, int(port)
+
+    return socket.gethostname(), 8001
+
+
+def validate_addr(ip, port):
+    """Handles all the connections using sockets"""
+
+    ip = ip.split('.')
+    if len(ip) != 4:
+        return False
+    for bit in ip:
+        if not bit.isdigit():
+            return False
+        if int(bit) < 0 or int(bit) > 255:
+            return False
+
+    if not port.isdigit():
+        return False
+
+    return True
 
 
 class Connection:
     """Handles all the connections using sockets"""
 
-    with open("config.txt", "r") as rf:
-        server_ip = rf.readline().strip()
-        server_port = int(rf.readline().strip())
-
-    IP = server_ip
-    PORT = server_port
+    IP, PORT = get_ip()
     BUFF_SIZE = 2 ** 7
     BUFF_SIZE_IMG = 2 ** 22
     HEADER_SIZE = 10
