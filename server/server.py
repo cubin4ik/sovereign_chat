@@ -29,7 +29,6 @@ def validate_addr(ip, port):
 
     ip = ip.split('.')
     if len(ip) != 4:
-        logging.debug('IP length check failed')
         return False
     for bit in ip:
         if not bit.isdigit():
