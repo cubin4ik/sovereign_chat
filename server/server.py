@@ -21,7 +21,7 @@ def get_ip():
                 if validate_addr(ip, port):
                     return ip, int(port)
 
-    return '127.0.0.1', 8000
+    return socket.gethostname(), 8001
 
 
 def validate_addr(ip, port):
@@ -67,7 +67,6 @@ class Connection:
                 logging.info(f"LISTENING ON: {self.IP}:{self.PORT}")
 
                 while True:
-                    logging.info("\nlistening..\n")
                     remote_socket, address = self.host_socket.accept()
                     logging.info(f"connection: {address}")
 
