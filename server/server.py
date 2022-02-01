@@ -1,28 +1,58 @@
 """Server based on socket connections"""
 
+import os
 import controller
 import socket
 import threading
 import logging
 
-logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s (%(asctime)s)')
+logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s (%(asctime)s)')
+
+
+def get_ip():
+    """Get IP/port from file first or set localhost"""
+
+    if os.path.isfile('config.txt'):
+        with open("config.txt", "r") as rf:
+            full_address = rf.read().split('\n')
+            if len(full_address) > 1:
+                ip = full_address[0].strip()
+                port = full_address[1].strip()
+                if validate_addr(ip, port):
+                    return ip, int(port)
+
+    return '127.0.0.1', 8000
+
+
+def validate_addr(ip, port):
+    """Validate IP/PORT"""
+
+    ip = ip.split('.')
+    if len(ip) != 4:
+        logging.debug('IP length check failed')
+        return False
+    for bit in ip:
+        if not bit.isdigit():
+            return False
+        if int(bit) < 0 or int(bit) > 255:
+            return False
+
+    if not port.isdigit():
+        return False
+
+    return True
 
 
 class Connection:
     """Handles all the connections using sockets"""
 
-    with open("config.txt", "r") as rf:
-        server_ip = rf.readline().strip()
-        server_port = int(rf.readline().strip())
-
-    IP = server_ip
-    PORT = server_port
+    IP, PORT = get_ip()
     BUFF_SIZE = 2 ** 7
     BUFF_SIZE_IMG = 2 ** 22
     HEADER_SIZE = 10
     QUEUE = 5
 
-    active_users = {}
+    active_users = {}  # users that are currently in chat
 
     def __init__(self, socket_type=None):
         """Creates an endpoint using TCP/IP"""
