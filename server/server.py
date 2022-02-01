@@ -1,12 +1,9 @@
-"""Server side based on socket connection"""
+"""Server based on socket connections"""
 
-# DELETE "server." as a reference (it is there to run both client and server from one project directory)
-from server.controller import Session
-from server.controller import DataHandling
+import controller
 import socket
 import threading
 import logging
-
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s (%(asctime)s)')
 
@@ -53,6 +50,9 @@ class Connection:
     def serv_client(self, client_socket):
         """A thread of serving one client"""
 
+        handle_data = controller.DataHandling
+        session = controller.Session
+
         with client_socket:
             req = self.receive(client_socket)
             logging.info("REQUEST TO: ", req)
@@ -64,29 +64,29 @@ class Connection:
                 # TODO: all sending operations should consider try/except method in case client closes connection
                 if header == "CHECK_KEY":
                     print(f"KEY RECEIVED: {body}")
-                    resp = Session.check_key(body)
+                    resp = session.check_key(body)
                     client_socket.send(self.format_msg(str(resp)))
                 elif header == "USEREXIST":
                     print(f"CHECKING USER: {body}")
-                    resp = DataHandling.user_exists(body)
+                    resp = handle_data.user_exists(body)
                     print(f"RESULT: {resp}")
                     client_socket.send(self.format_msg(str(resp)))
                 elif header == "CHECKPASS":
                     credentials = body.split(";")
-                    resp = DataHandling.check_pass(*credentials)
+                    resp = handle_data.check_pass(*credentials)
                     client_socket.send(self.format_msg(str(resp)))
                 elif header == "STARTSESS":
                     user_name = body
-                    resp = Session(user_name)
+                    resp = session(user_name)
                     key = resp.key[:-len(user_name)]
                     client_socket.send(self.format_msg(str(key)))
                     print(f"KEY SENT: {key}")
                 elif header == "ADD_USERS":
                     user_data = body.split(";")
-                    DataHandling.save_to_database(*user_data)
+                    handle_data.save_to_database(*user_data)
                 elif header == "UPDATE_ME":
                     user_name, f_name, l_name = body.split(";")
-                    result = DataHandling.update_database(user_name, f_name, l_name)  # TODO: Finish the response
+                    result = handle_data.update_database(user_name, f_name, l_name)  # TODO: Finish the response
                     client_socket.send(self.format_msg(str(result)))
                 elif header == "AVATAR_ME":
                     user = body
@@ -94,11 +94,11 @@ class Connection:
                     client_socket.send(self.format_msg(str(reply)))
                     img = self.receive_img(client_socket)
                     print("RECEIVED IMAGE: ", img)
-                    result = DataHandling.save_img(user, img)
+                    result = handle_data.save_img(user, img)
                     client_socket.send(self.format_msg(str(result)))
                 elif header == "GETAVATAR":
                     user = body
-                    img = DataHandling.get_avatar(user)
+                    img = handle_data.get_avatar(user)
                     if img:
                         reply = "SENDING_IMG"
                         client_socket.send(self.format_msg(str(reply)))
@@ -107,12 +107,12 @@ class Connection:
                         reply = "NOT_FOUND"
                         client_socket.send(self.format_msg(str(reply)))
                 elif header == "GETLASTID":
-                    resp = DataHandling.get_last_id()
+                    resp = handle_data.get_last_id()
                     client_socket.send(self.format_msg(resp))
                     print(f"LAST ID: {resp}")
                 elif header == "DELETEKEY":
                     key = body
-                    Session.terminate_session(key)
+                    session.terminate_session(key)
                 elif header == "USERSLIST":
                     if Connection.active_users != {}:
                         users_list = ""
@@ -164,7 +164,7 @@ class Connection:
                 elif header == "USER_DATA":
                     key = body
                     print(f"KEY RECEIVED: {key}")
-                    user_data = DataHandling.get_user_data(key)
+                    user_data = handle_data.get_user_data(key)
                     print("SENDING USER DATA:", user_data)
                     client_socket.send(self.format_msg(str(user_data)))
                 else:
@@ -229,3 +229,8 @@ class Connection:
             print(f"BROADCASTING: {user} - {info_msg}")
             user_socket = Connection.active_users.get(user)
             user_socket.send(self.format_msg(info_msg))
+
+
+if __name__ == '__main__':
+    logging.info(f"LAUNCHING SERVER at address: {Connection.IP}:{Connection.PORT}")
+    Connection('server')
