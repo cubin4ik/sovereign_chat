@@ -19,7 +19,7 @@ def get_ip():
                 if validate_addr(ip, port):
                     return ip, int(port)
 
-    return socket.gethostname(), 8001
+    return socket.gethostname(), 8000
 
 
 def validate_addr(ip, port):
