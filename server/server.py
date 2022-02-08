@@ -255,6 +255,12 @@ class Connection:
             user_socket.send(self.format_msg(info_msg))
 
 
+class Commands(DataHandling, Session):
+    """Handles all possible commands on Connection and Controller"""
+
+    pass
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s (%(asctime)s)')
     logging.info(f"LAUNCHING SERVER at address: {Connection.IP}:{Connection.PORT}")
