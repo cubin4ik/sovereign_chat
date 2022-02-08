@@ -6,8 +6,6 @@ import socket
 import threading
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s (%(asctime)s)')
-
 
 def get_ip():
     """Get IP/port from file first or set localhost"""
@@ -260,5 +258,8 @@ class Connection:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s (%(asctime)s)')
     logging.info(f"LAUNCHING SERVER at address: {Connection.IP}:{Connection.PORT}")
+
+    # starting server
     Connection('server')

@@ -17,7 +17,7 @@ import os
 
 # local files:
 # DELETE "client." as a reference (it is there to run both client and server from one project directory)
-from client.controller import User, Session, Chat
+from controller import User, Session, Chat
 
 
 class Application(Frame):

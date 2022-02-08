@@ -12,7 +12,7 @@ from tkinter import *
 
 # local files
 # DELETE "client." as a reference (it is there to run both client and server from one project directory)
-from client.connection import Connection
+from connection import Connection
 
 file_paths = {
     "users": "data/users.txt",
