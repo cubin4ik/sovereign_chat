@@ -85,118 +85,119 @@ class Connection:
 
             if not req:
                 print(f"Connection closed by remote socket: {client_socket.getpeername()}")
-            else:
-                header, body = req.split("|")
-                # TODO: all sending operations should consider try/except method in case client closes connection
-                if header == "CHECK_KEY":
-                    print(f"KEY RECEIVED: {body}")
-                    resp = session.check_key(body)
-                    client_socket.send(self.format_msg(str(resp)))
-                elif header == "USEREXIST":
-                    print(f"CHECKING USER: {body}")
-                    resp = handle_data.user_exists(body)
-                    print(f"RESULT: {resp}")
-                    client_socket.send(self.format_msg(str(resp)))
-                elif header == "CHECKPASS":
-                    credentials = body.split(";")
-                    resp = handle_data.check_pass(*credentials)
-                    client_socket.send(self.format_msg(str(resp)))
-                elif header == "STARTSESS":
-                    user_name = body
-                    resp = session(user_name)
-                    key = resp.key[:-len(user_name)]
-                    client_socket.send(self.format_msg(str(key)))
-                    print(f"KEY SENT: {key}")
-                elif header == "ADD_USERS":
-                    user_data = body.split(";")
-                    handle_data.save_to_database(*user_data)
-                elif header == "UPDATE_ME":
-                    user_name, f_name, l_name = body.split(";")
-                    result = handle_data.update_database(user_name, f_name, l_name)  # TODO: Finish the response
-                    client_socket.send(self.format_msg(str(result)))
-                elif header == "AVATAR_ME":
-                    user = body
-                    reply = "SEND_IMG"
+                return
+
+            header, body = req.split("|")
+            # TODO: all sending operations should consider try/except method in case client closes connection
+            if header == "CHECK_KEY":
+                print(f"KEY RECEIVED: {body}")
+                resp = session.check_key(body)
+                client_socket.send(self.format_msg(str(resp)))
+            elif header == "STARTSESS":
+                user_name = body
+                resp = session(user_name)
+                key = resp.key[:-len(user_name)]
+                client_socket.send(self.format_msg(str(key)))
+                print(f"KEY SENT: {key}")
+            elif header == "DELETEKEY":
+                key = body
+                session.terminate_session(key)
+            elif header == "USEREXIST":
+                print(f"CHECKING USER: {body}")
+                resp = handle_data.user_exists(body)
+                print(f"RESULT: {resp}")
+                client_socket.send(self.format_msg(str(resp)))
+            elif header == "CHECKPASS":
+                credentials = body.split(";")
+                resp = handle_data.check_pass(*credentials)
+                client_socket.send(self.format_msg(str(resp)))
+            elif header == "ADD_USERS":
+                user_data = body.split(";")
+                handle_data.save_to_database(*user_data)
+            elif header == "UPDATE_ME":
+                user_name, f_name, l_name = body.split(";")
+                result = handle_data.update_database(user_name, f_name, l_name)  # TODO: Finish the response
+                client_socket.send(self.format_msg(str(result)))
+            elif header == "AVATAR_ME":
+                user = body
+                reply = "SEND_IMG"
+                client_socket.send(self.format_msg(str(reply)))
+                img = self.receive_img(client_socket)
+                print("RECEIVED IMAGE: ", img)
+                result = handle_data.save_img(user, img)
+                client_socket.send(self.format_msg(str(result)))
+            elif header == "GETAVATAR":
+                user = body
+                img = handle_data.get_avatar(user)
+                if img:
+                    reply = "SENDING_IMG"
                     client_socket.send(self.format_msg(str(reply)))
-                    img = self.receive_img(client_socket)
-                    print("RECEIVED IMAGE: ", img)
-                    result = handle_data.save_img(user, img)
-                    client_socket.send(self.format_msg(str(result)))
-                elif header == "GETAVATAR":
-                    user = body
-                    img = handle_data.get_avatar(user)
-                    if img:
-                        reply = "SENDING_IMG"
-                        client_socket.send(self.format_msg(str(reply)))
-                        client_socket.send(img)
-                    else:
-                        reply = "NOT_FOUND"
-                        client_socket.send(self.format_msg(str(reply)))
-                elif header == "GETLASTID":
-                    resp = handle_data.get_last_id()
-                    client_socket.send(self.format_msg(resp))
-                    print(f"LAST ID: {resp}")
-                elif header == "DELETEKEY":
-                    key = body
-                    session.terminate_session(key)
-                elif header == "USERSLIST":
-                    if Connection.active_users != {}:
-                        users_list = ""
-                        for user in Connection.active_users:
-                            users_list += f"{user.capitalize()},"
-                        client_socket.send(self.format_msg(users_list))
-                        print(f"USER LIST: {users_list}")
-                elif header == "STAY_ALIVE":
-                    user_name = body
-                    Connection.active_users[user_name] = client_socket
-
-                    info_msg = f"SENDALLMSG|event|{user_name} joined\n"
-                    self.broadcast(info_msg=info_msg)
-
-                    try:
-                        while True:
-                            msg_in = self.receive(client_socket)  # TODO: add private messages
-                            if not msg_in or msg_in[:Connection.HEADER_SIZE] == "STOPMYCHAT":
-                                print(f"RECEIVED STOP KEY:", user_name)
-                                break
-                            else:
-                                destination, msg = msg_in.split("|")
-
-                                msg = f"{destination}|{user_name}|{msg}"
-
-                                for user in Connection.active_users:
-                                    print(f"BROADCASTING: {user} - {msg}")
-                                    user_socket = Connection.active_users.get(user)
-                                    user_socket.send(self.format_msg(msg))
-
-                        closed_socket = Connection.active_users.pop(body)
-                        print("USER LEFT: ", closed_socket)
-                        info_msg = f"SENDALLMSG|event|{user_name} left\n"
-
-                    except ConnectionRefusedError:
-                        closed_socket = Connection.active_users.pop(body)
-                        print("USER LEFT: ", closed_socket)
-                        info_msg = f"SENDALLMSG|event|{user_name} left the chat\n"
-                    except ConnectionResetError:
-                        closed_socket = Connection.active_users.pop(body)
-                        print("USER LEFT: ", closed_socket)
-                        info_msg = f"SENDALLMSG|event|{user_name} left the chat\n"
-
-                    print("ACTIVE USERS: ", Connection.active_users)
-
-                    if Connection.active_users != {}:
-                        print("SENDING QUIT MSG")
-                        self.broadcast(info_msg=info_msg)
-                elif header == "USER_DATA":
-                    key = body
-                    print(f"KEY RECEIVED: {key}")
-                    user_data = handle_data.get_user_data(key)
-                    print("SENDING USER DATA:", user_data)
-                    client_socket.send(self.format_msg(str(user_data)))
+                    client_socket.send(img)
                 else:
-                    print(f"NOT FOUND COMMAND: {header} ---> {body}")
-                    req = f"{len(req):<{Connection.HEADER_SIZE}}" + req
-                    client_socket.send(req.encode("utf-8"))
+                    reply = "NOT_FOUND"
+                    client_socket.send(self.format_msg(str(reply)))
+            elif header == "GETLASTID":
+                resp = handle_data.get_last_id()
+                client_socket.send(self.format_msg(resp))
+                print(f"LAST ID: {resp}")
+            elif header == "USERSLIST":
+                if Connection.active_users != {}:
+                    users_list = ""
+                    for user in Connection.active_users:
+                        users_list += f"{user.capitalize()},"
+                    client_socket.send(self.format_msg(users_list))
+                    print(f"USER LIST: {users_list}")
+            elif header == "STAY_ALIVE":
+                user_name = body
+                Connection.active_users[user_name] = client_socket
+
+                info_msg = f"SENDALLMSG|event|{user_name} joined\n"
+                self.broadcast(info_msg=info_msg)
+
+                try:
+                    while True:
+                        msg_in = self.receive(client_socket)  # TODO: add private messages
+                        if not msg_in or msg_in[:Connection.HEADER_SIZE] == "STOPMYCHAT":
+                            print(f"RECEIVED STOP KEY:", user_name)
+                            break
+                        else:
+                            destination, msg = msg_in.split("|")
+
+                            msg = f"{destination}|{user_name}|{msg}"
+
+                            for user in Connection.active_users:
+                                print(f"BROADCASTING: {user} - {msg}")
+                                user_socket = Connection.active_users.get(user)
+                                user_socket.send(self.format_msg(msg))
+
+                    closed_socket = Connection.active_users.pop(body)
+                    print("USER LEFT: ", closed_socket)
+                    info_msg = f"SENDALLMSG|event|{user_name} left\n"
+
+                except ConnectionRefusedError:
+                    closed_socket = Connection.active_users.pop(body)
+                    print("USER LEFT: ", closed_socket)
+                    info_msg = f"SENDALLMSG|event|{user_name} left the chat\n"
+                except ConnectionResetError:
+                    closed_socket = Connection.active_users.pop(body)
+                    print("USER LEFT: ", closed_socket)
+                    info_msg = f"SENDALLMSG|event|{user_name} left the chat\n"
+
+                print("ACTIVE USERS: ", Connection.active_users)
+
+                if Connection.active_users != {}:
+                    print("SENDING QUIT MSG")
+                    self.broadcast(info_msg=info_msg)
+            elif header == "USER_DATA":
+                key = body
+                print(f"KEY RECEIVED: {key}")
+                user_data = handle_data.get_user_data(key)
+                print("SENDING USER DATA:", user_data)
+                client_socket.send(self.format_msg(str(user_data)))
+            else:
+                print(f"NOT FOUND COMMAND: {header} ---> {body}")
+                req = f"{len(req):<{Connection.HEADER_SIZE}}" + req
+                client_socket.send(req.encode("utf-8"))
 
     @staticmethod
     def receive(remote_socket):
