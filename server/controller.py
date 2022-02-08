@@ -259,7 +259,8 @@ class Session:
 
         if not os.path.exists(file_paths["data"]):
             os.mkdir(file_paths["data"])
-            open(file_paths["keys"], "w").close()
+            with open(file_paths["keys"], "w"):
+                pass  # creating a file
 
         with open(file_paths["keys"], "a") as wf:
             wf.write(self.key + "\n")
