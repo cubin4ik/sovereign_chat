@@ -84,7 +84,16 @@ class Connection:
                 print(f"Connection closed by remote socket: {client_socket.getpeername()}")
                 return
 
-            header, body = req.split("|")
+            header = req.split('|')[0]
+            body = req[len(header) + 1:]  # including '|' digit to slice it
+
+            # for obj in (Session, DataHandling):  # looping through methods in controller
+            #     if hasattr(obj, header):
+            #         cmd = getattr(obj, header)
+            #         if callable(cmd):
+            #             cmd(body)
+            #         break
+
             # TODO: all sending operations should consider try/except method in case client closes connection
             if header == "CHECK_KEY":
                 print(f"KEY RECEIVED: {body}")
@@ -158,7 +167,8 @@ class Connection:
                             print(f"RECEIVED STOP KEY:", user_name)
                             break
                         else:
-                            destination, msg = msg_in.split("|")
+                            destination = msg_in.split("|")[0]
+                            msg = msg_in[len(destination) + 1:]
 
                             msg = f"{destination}|{user_name}|{msg}"
 
