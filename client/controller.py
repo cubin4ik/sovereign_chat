@@ -56,7 +56,7 @@ class User:
             key = rf.read()
 
         client = Connection()
-        user_data = client.request_server(f"USER_DATA|{key}")
+        user_data = client.request_server(f"GET_USER_DATA|{key}")
         data = user_data.split(",")
         print("USER DATA RECEIVED: ", data)
 
@@ -155,7 +155,7 @@ class DataHandling:
 
         try:
             client = Connection()
-            resp = client.request_server(f"GETAVATAR|{user}", close="KEEP_ALIVE")
+            resp = client.request_server(f"GET_AVATAR|{user}", close="KEEP_ALIVE")
             if resp == "SENDING_IMG":
                 img = client.receive_img()
                 client.close_connection()
@@ -191,7 +191,7 @@ class DataHandling:
 
         try:
             client = Connection()
-            last_id = client.request_server(f"GETLASTID|THROWAWAYSTRING")
+            last_id = client.request_server(f"GET_LAST_ID|THROWAWAYSTRING")
             print(f"TYPE: {type(last_id)}, ID: {last_id}")
             return int(last_id)
         except ConnectionError:

@@ -87,20 +87,23 @@ class Connection:
             header, body = req.split("|")
             header = header.lower()
 
+            logging.debug(f'Working on HEADER-BODY: {header} - {body}')
             for obj in (Session, DataHandling):
                 if hasattr(obj, header):
                     cmd = getattr(obj, header)
 
                     if callable(cmd):
-                        cmd(body)
+                        logging.debug(f'Command found. Executing: {cmd.__name__} with params ({body})')
+                        resp = cmd(body)
+                        client_socket.send(self.format_msg(str(resp)))
                     break
 
             # TODO: all sending operations should consider try/except method in case client closes connection
-            if header == "CHECK_KEY":
-                print(f"KEY RECEIVED: {body}")
-                resp = Session.check_key(body)
-                client_socket.send(self.format_msg(str(resp)))
-            elif header == "STARTSESS":
+            # if header == "CHECK_KEY":
+            #     print(f"KEY RECEIVED: {body}")
+            #     resp = Session.check_key(body)
+            #     client_socket.send(self.format_msg(str(resp)))
+            if header == "STARTSESS":
                 user_name = body
                 resp = Session(user_name)
                 key = resp.key[:-len(user_name)]
@@ -133,7 +136,7 @@ class Connection:
                 print("RECEIVED IMAGE: ", img)
                 result = DataHandling.save_img(user, img)
                 client_socket.send(self.format_msg(str(result)))
-            elif header == "GETAVATAR":
+            elif header == "GET_AVATAR":
                 user = body
                 img = DataHandling.get_avatar(user)
                 if img:
@@ -143,10 +146,10 @@ class Connection:
                 else:
                     reply = "NOT_FOUND"
                     client_socket.send(self.format_msg(str(reply)))
-            elif header == "GETLASTID":
-                resp = DataHandling.get_last_id()
-                client_socket.send(self.format_msg(resp))
-                print(f"LAST ID: {resp}")
+            # elif header == "GET_LAST_ID":
+            #     resp = DataHandling.get_last_id()
+            #     client_socket.send(self.format_msg(resp))
+            #     print(f"LAST ID: {resp}")
             elif header == "USERSLIST":
                 if Connection.active_users != {}:
                     users_list = ""
@@ -195,12 +198,12 @@ class Connection:
                 if Connection.active_users != {}:
                     print("SENDING QUIT MSG")
                     self.broadcast(info_msg=info_msg)
-            elif header == "USER_DATA":
-                key = body
-                print(f"KEY RECEIVED: {key}")
-                user_data = DataHandling.get_user_data(key)
-                print("SENDING USER DATA:", user_data)
-                client_socket.send(self.format_msg(str(user_data)))
+            # elif header == "USER_DATA":
+            #     key = body
+            #     print(f"KEY RECEIVED: {key}")
+            #     user_data = DataHandling.get_user_data(key)
+            #     print("SENDING USER DATA:", user_data)
+            #     client_socket.send(self.format_msg(str(user_data)))
             else:
                 print(f"NOT FOUND COMMAND: {header} ---> {body}")
                 req = f"{len(req):<{Connection.HEADER_SIZE}}" + req
