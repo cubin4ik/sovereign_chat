@@ -389,7 +389,7 @@ class Chat:
                 else:
                     header = msg_in.split('|')[0]
                     user_name = msg_in.split('|')[1]
-                msg = msg_in[len(header + user_name) + 2:]  # including '|' symbol two times in len to slice
+                    msg = msg_in[len(header + user_name) + 2:]  # including '|' symbol two times in len to slice
                     if header == "SENDALLMSG" or header == "STAY_ALIVE":
                         print(f"RECEIVED: {user_name}: {msg}")
                         self.refresh_widget(user_name, msg)
