@@ -85,6 +85,16 @@ class Connection:
                 return
 
             header, body = req.split("|")
+            header = header.lower()
+
+            for obj in (Session, DataHandling):
+                if hasattr(obj, header):
+                    cmd = getattr(obj, header)
+
+                    if callable(cmd):
+                        cmd(body)
+                    break
+
             # TODO: all sending operations should consider try/except method in case client closes connection
             if header == "CHECK_KEY":
                 print(f"KEY RECEIVED: {body}")
